@@ -195,9 +195,7 @@ class KNearestNeighbor(object):
           #########################################################################
           # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-          # Find the indices of the k nearest neighbors
           nearest_neighbors = np.argsort(dists[i])[:k]
-          # Get the labels of the k nearest neighbors
           closest_y = self.y_train[nearest_neighbors]
 
           # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -210,7 +208,6 @@ class KNearestNeighbor(object):
           #########################################################################
           # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-          # Find the most common label in closest_y
           y_pred[i] = np.bincount(closest_y).argmax()
 
           # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
