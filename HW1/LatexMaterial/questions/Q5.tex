@@ -1,0 +1,193 @@
+\section{Question 5}
+\subsection{Part 1}
+Show that the expected squared error can be decomposed into three parts: bias, variance, and irreducible error \( \sigma^2 \):
+\[
+Error = Bias^2 + Variance + \sigma^2
+\]
+
+Formally, assume we have a randomly sampled training set \( D \) (independently drawn from the test data), and we compute an estimator \( \hat{\theta}(D) \) (for example, using empirical risk minimization). The expected squared error for a test input \( x \) is decomposed as follows:
+\[
+\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] = Bias \left( \hat{f}_{\hat{\theta}(D)}(x) \right)^2 + Var \left( \hat{f}_{\hat{\theta}(D)}(x) \right) + \sigma^2
+\]
+
+Recall the formulaic history of variance and bias that may be useful:
+\[
+Bias \left( \hat{f}_{\hat{\theta}(D)}(x) \right) = \mathbb{E}_{Y \sim p(y|x),D} \left[ \hat{f}_{\hat{\theta}(D)}(x) - Y \right]
+\]
+\[
+Var \left( \hat{f}_{\hat{\theta}(D)}(x) \right) = \mathbb{E}_D \left[ \left( \hat{f}_{\hat{\theta}(D)}(x) - \mathbb{E}_D \left[ \hat{f}_{\hat{\theta}(D)}(x) \right] \right)^2 \right]
+\]
+\begin{qsolve}
+	\begin{qsolve}[]
+		we know that $D$ is sampled independently from test data. if we define $f(x)$ as the true function, then we can write the expected squared error as:
+		\[
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] = \mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - f(x) + f(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right]
+		\]
+		using this we can expand the above equation as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - f(x))^2 \right] + \mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] $$
+		$$
+		+ 2\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - f(x))(f(x) - \hat{f}_{\hat{\theta}(D)}(x)) \right]
+		$$
+		now we can expand the last term of above equation using the fact that $y = f(x) + \varepsilon$ where $\varepsilon$ is the noise term as follows:
+		$$
+		2\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) + \varepsilon ) f(x) \right] - 2\mathbb{E}_{Y \sim p(y|x),D} \left[ f(x)f(x) \right] 
+		$$
+		$$
+		-2\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) + \varepsilon)\hat{f}_{\hat{\theta}(D)}(x) \right] + 2\mathbb{E}_{Y \sim p(y|x),D} \left[ f(x)\hat{f}_{\hat{\theta}(D)}(x) \right]
+		$$
+		and this can be written as:
+		$$
+		2f^2(x) + 2\mathbb{E}_{Y \sim p(y|x),D} \left[ \varepsilon \right] f(x) - 2f^2(x) - 2f(x)\mathbb{E}_{Y \sim p(y|x),D} \left[ f_{\hat{\theta}(D)}(x) \right] $$
+		$$
+		- \mathbb{E}_{Y \sim p(y|x),D} \left[ \varepsilon\right] \mathbb{E}_{Y \sim p(y|x),D} \left[ f_{\hat{\theta}(D)}(x) \right] + f(x)\mathbb{E}_{Y \sim p(y|x),D} \left[ f_{\hat{\theta}(D)}(x) \right]
+		$$
+		\splitqsolve[\splitqsolve]
+		as we know that $\mathbb{E}_{Y \sim p(y|x),D} \left[ \varepsilon \right] = 0$ so the above equation is equal to $0$ and we can rewrite the first equation as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - f(x))^2 \right] + \mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] 
+		$$
+		we know that the first term is the noise term so we focus on writing the second term. if we define $\mathbb{E}_{Y \sim p(y|x),D} \left[ f_{\hat{\theta}(D)}(x) \right]$ as $\bar{f}(x)$ then we can write the second term as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] = \mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \bar{f}(x) + \bar{f}(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right]
+		$$
+		now we can write this equation as follows:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \bar{f}(x))^2 \right] + \mathbb{E}_{Y \sim p(y|x),D} \left[ (\bar{f}(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right]
+		$$
+		$$
+		+ 2\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \bar{f}(x))(\bar{f}(x) - \hat{f}_{\hat{\theta}(D)}(x)) \right]
+		$$
+		we can expand the last term as follows:
+		$$
+		2\mathbb{E}_{Y \sim p(y|x),D} \left[ f(x)\bar{f}(x) \right] - 2\mathbb{E}_{Y \sim p(y|x),D} \left[ f(x)\hat{f}_{\hat{\theta}(D)}(x) \right]
+		$$
+		$$
+		-2\mathbb{E}_{Y \sim p(y|x),D} \left[ \bar{f}(x)\bar{f}(x) \right] + 2\mathbb{E}_{Y \sim p(y|x),D} \left[ \bar{f}(x)\hat{f}_{\hat{\theta}(D)}(x) \right]
+		$$
+		this equals to the following:
+		$$
+		2f(x)\bar{f}(x) - 2f(x)\bar{f}(x) - 2\bar{f}(x)^2 + 2\bar{f}(x)^2 = 0
+		$$
+		so we can write the second term as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (f(x) - \bar{f}(x))^2 \right] + \mathbb{E}_{Y \sim p(y|x),D} \left[ (\bar{f}(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right]
+		$$
+		the first term is expectation of the squared bias and can be written as $(f(x) - \bar{f}(x))^2$  
+		so we can write the expected squared error as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] = \mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - f(x))^2 \right]+  (f(x) - \bar{f}(x))^2 $$
+		$$
+		+\mathbb{E}_{Y \sim p(y|x),D} \left[ (\bar{f}(x) - \hat{f}_{\hat{\theta}(D)}(x))^2 \right]
+		$$
+		as i mentioned before the first term is the noise term. the second is the squared bias and the third term is the variance term. so we can write the expected squared error as:
+		$$
+		\mathbb{E}_{Y \sim p(y|x),D} \left[ (Y - \hat{f}_{\hat{\theta}(D)}(x))^2 \right] = Bias \left( \hat{f}_{\hat{\theta}(D)}(x) \right)^2 + Var \left( \hat{f}_{\hat{\theta}(D)}(x) \right) + \sigma^2
+		$$
+
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 2}
+Suppose our training set consists of \( D = \{(x_i, y_i)\}_{i=1}^{n} \), where the only randomness comes from the noise vector \( \varepsilon \). \( Y = X\theta^* + \varepsilon \), where \( \theta^* \) is the true linear model and each noise variable \( \varepsilon_i \) is independently and identically distributed with zero mean and variance 1. We use ordinary least squares (OLS) to estimate \( \hat{\theta} \) from this data.
+
+Calculate the error and variance of the estimate \( \hat{\theta} \), and use it to calculate the error and variance of predictions on specific test inputs. For simplicity, assume \( X^T X \) is diagonal.
+
+\[
+\hat{\theta} = (X^T X)^{-1} X^T Y
+\]
+
+Assume our data matrix is non-random and \( Y \in \mathbb{R}^n \) is a random vector representing the noisy training targets. For simplicity, assume \( X^T X \) is diagonal.
+\begin{qsolve}
+	\begin{qsolve}[]
+		first we calculate the error and variance of the estimate $\hat{\theta}$. we know that $\hat{\theta} = (X^T X)^{-1} X^T Y$ so we can write the error as:
+		$$
+		\text{Error} = \mathbb{E}\left[ \hat{\theta} \right] = \mathbb{E}\left[ (X^T X)^{-1} X^T Y \right]
+		$$
+		$$
+		= \mathbb{E} \left[ (X^T X)^{-1} X^T (X\theta^* + \varepsilon) \right]
+		$$
+		$$
+		= \mathbb{E} \left[ (X^T X)^{-1} X^T X\theta^* + (X^T X)^{-1} X^T \varepsilon \right]
+		$$
+		$$
+		= \mathbb{E} \left[ \theta^* + (X^T X)^{-1} X^T \varepsilon \right]
+		$$
+		$$
+		= \theta^* + (X^T X)^{-1} X^T \mathbb{E} \left[ \varepsilon \right]
+		$$
+		$$
+		= \theta^*
+		$$
+		so we can say that \hl{$\mathbb{E}\left[ \hat{\theta} \right] = \theta^*$}. now we calculate the covariance of the estimate $\hat{\theta}$ as follows:
+		$$
+		Cov(\hat{\theta}) = \mathbb{E}\left[ (\hat{\theta} - \mathbb{E}\left[ \hat{\theta} \right])(\hat{\theta} - \mathbb{E}\left[ \hat{\theta} \right])^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ (\hat{\theta} - \theta^*)(\hat{\theta} - \theta^*)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ ((X^T X)^{-1} X^T Y - \theta^*)((X^T X)^{-1} X^T Y - \theta^*)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ ((X^T X)^{-1} X^T (X\theta^* + \varepsilon) - \theta^*)((X^T X)^{-1} X^T (X\theta^* + \varepsilon) - \theta^*)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ ((X^T X)^{-1} X^T \varepsilon)((X^T X)^{-1} X^T \varepsilon)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ (X^T X)^{-1} X^T \varepsilon \varepsilon^T X (X^T X)^{-1} \right]
+		$$
+		$$
+		= (X^T X)^{-1} X^T \mathbb{E}\left[ \varepsilon \varepsilon^T \right] X (X^T X)^{-1}
+		$$
+		$$
+		= (X^T X)^{-1} X^T I X (X^T X)^{-1}
+		$$
+		$$
+		=  (X^T X)^{-1} X^T X (X^T X)^{-1}
+		$$
+		$$
+		=  (X^T X)^{-1}
+		$$
+		\splitqsolve[\splitqsolve]
+		so we can say that \hl{$Cov(\hat{\theta}) =  (X^T X)^{-1}$}. now we calculate the error and variance of predictions on specific test inputs. we can write the error as:
+		$$
+		\text{Error} = \mathbb{E}\left[ (X\hat{\theta} - Y )\right]
+		$$
+		$$
+		= \mathbb{E}\left[X\hat{\theta}\right] - \mathbb{E}\left[X\theta^* + \varepsilon\right]
+		$$
+		$$
+		= X\mathbb{E}\left[\hat{\theta}\right] - X\theta^* - \mathbb{E}\left[\varepsilon\right]
+		$$
+		$$
+		= X\theta^* - X\theta^* - 0 = 0
+		$$
+		so we can say that \hl{$\text{Error} = 0$}. now we calculate the variance of predictions on specific test inputs as follows:
+		$$
+		\text{Var} = \mathbb{E}\left[ (X\hat{\theta} - \mathbb{E}\left[X\hat{\theta}\right])(X\hat{\theta} - \mathbb{E}\left[X\hat{\theta}\right])^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ (X(X^T X)^{-1} X^T Y - X\theta^*)(X(X^T X)^{-1} X^T Y - X\theta^*)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ (X(X^T X)^{-1} X^T (X\theta^* + \varepsilon) - X\theta^*)(X(X^T X)^{-1} X^T (X\theta^* + \varepsilon) - X\theta^*)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ (X(X^T X)^{-1} X^T \varepsilon)(X(X^T X)^{-1} X^T \varepsilon)^T \right]
+		$$
+		$$
+		= \mathbb{E}\left[ X(X^T X)^{-1} X^T \varepsilon \varepsilon^T X(X^T X)^{-1} X^T \right]
+		$$
+		$$
+		= X(X^T X)^{-1} X^T \mathbb{E}\left[ \varepsilon \varepsilon^T \right] X(X^T X)^{-1} X^T
+		$$
+		$$
+		= X(X^T X)^{-1} X^T  I X(X^T X)^{-1} X^T
+		$$
+		$$
+		=  X(X^T X)^{-1} X^T
+		$$
+		
+		\end{qsolve}
+\end{qsolve}

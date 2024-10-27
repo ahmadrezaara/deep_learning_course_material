@@ -1,0 +1,98 @@
+\section{Question 3}
+\subsection{Part 1}
+Consider the equation \( Xw = y \), where \( X \in \mathbb{R}^{m \times n} \) is a non-square data matrix, \( w \) is a weight vector, and \( y \) is a vector of labels corresponding to each data point in each row of \( X \).
+
+Assume \( X = U \Sigma V^T \) (full SVD of \( X \)). Here, \( U \) and \( V \) are square and orthogonal matrices, and \( \Sigma \) is an \( m \times n \) matrix with non-zero singular values \( (\sigma_i) \) on the diagonal.
+
+For this problem, \( \Sigma^\dagger \) is defined as an \( n \times m \) matrix with the inverse of singular values \( \left(\frac{1}{\sigma_i}\right) \) along the diagonal.
+
+First, consider the case where \( m > n \), meaning the data matrix \( X \) has more rows than columns (tall matrix) and the system is overdetermined. How do we find the weights \( w \) that minimize the error between \( Xw \) and \( y \)? In other words, we want to solve \( \min \| Xw - y \|^2 \).
+\begin{qsolve}
+	\begin{qsolve}[]
+		we can rewrite the equation as:
+		$$min \| Xw - y \|^2 = min (Xw - y)^T (Xw - y)$$
+		$$\Rightarrow min \| Xw - y \|^2 = min w^T X^T X w - w^T X^T y - y^T X w + y^T y$$
+		$$\Rightarrow min \| Xw - y \|^2 = min w^T X^T X w - 2 w^T X^T y + y^T y$$
+		now if we take the derivative of the equation with respect to \(w\) and set it to zero, we get:
+		$$\frac{d}{dw} (w^T X^T X w - 2 w^T X^T y + y^T y) = 0$$
+		$$\Rightarrow 2 X^T X w - 2 X^T y = 0$$
+		$$\Rightarrow X^T X w = X^T y$$
+		\begin{center}
+			\hl{$\Rightarrow w = (X^T X)^{-1} X^T y$}
+		\end{center}
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 2}
+Use the SVD \( X = U \Sigma V^T \) and simplify the solution.
+\begin{qsolve}
+	\begin{qsolve}[]
+		if we multiply the equation \(Xw = y\) by $X^T$ from the left, we get:
+		$$X^T X w = X^T y$$
+		now if we substitute \(X = U \Sigma V^T\) in the equation, we get:
+		$$V \Sigma^T U^T U \Sigma V^T w = V \Sigma^T U^T y$$
+		\splitqsolve[\splitqsolve]
+		$$ \Rightarrow V \Sigma^T \Sigma V^T w = V \Sigma^T U^T y$$
+		$$ \Rightarrow w = V (\Sigma^T \Sigma)^{-1} \Sigma^T U^T y$$
+		\begin{center}
+			\hl{$\Rightarrow w = V \Sigma^{\dagger} U^T y$}
+		\end{center}
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 3}
+You will notice that the least squares solution is of the form \( w^* = A y \). What happens if we multiply \( X \) from the left by matrix \( A \)? For this reason, matrix \( A \) is called the left inverse least squares.
+\begin{qsolve}
+	\begin{qsolve}[]
+		in the previous part we found that the least-squares solution has the form \( w^* = Ay \), which $A = V \Sigma^{\dagger} U^T$. if we multiply \(X\) from the left by the matrix \(A\), we get:
+		$$XA = U \Sigma V^T V \Sigma^{\dagger} U^T = U \Sigma \Sigma^{\dagger} U^T$$
+		as it is mentioned the matrix $\Sigma$ is a $m \times n $ matrix with non-zero singular values on the diagonal, so the product of $\Sigma \Sigma^{\dagger}$ is a $m \times m$ diagonal matrix with $1$ on the first $n$ diagonal and $0$ on the rest. so the product of $U \Sigma \Sigma^{\dagger} U^T$ is equal to $U I_n U^T$ which $I_n$ is an $m \times m$ matrix that has $1$ on the first $n$ diagonal and $0$ on the rest. hence the product of $XA$ is equal to $I_n$. so the matrix $A$ is called the left pseudoinverse of the least-squares solution.
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 4}
+Now consider the case where \( m < n \), meaning the data matrix \( X \) has more columns than rows, and the system is underdetermined. There are infinitely many solutions for \( w \). However, we are looking for the minimum-norm solution, meaning we want to solve \( \min \|w\|^2_2 \) subject to \( Xw = y \). What is the minimum-norm solution?
+\begin{qsolve}
+	\begin{qsolve}[]
+		we have an optimization problem in the following form:
+		$$min \|w\|^2_2$$
+		$$s.t \ Xw = y$$
+		we can write the lagraingian of the problem as:
+		$$L(w, \lambda) = \|w\|^2_2 + \lambda^T (Xw - y)$$
+		and we can rewrite the equation as:
+		\splitqsolve[\splitqsolve]
+		$$L(w, \lambda) = w^T w + \lambda^T Xw - \lambda^T y$$
+		now if we take the derivative of the equation with respect to \(w\) and set it to zero, we get:
+		$$\frac{\partial}{\partial w} (w^T w + \lambda^T Xw - \lambda^T y) = 0$$
+		$$\Rightarrow 2w + X^T \lambda = 0$$
+		$$\Rightarrow w = -\frac{1}{2} X^T \lambda$$
+		we can calculate $\lambda$ by substituting the value of $w$ in the equation $Xw = y$:
+		$$Xw = y$$
+		$$\Rightarrow X(-\frac{1}{2} X^T \lambda) = y$$
+		$$\Rightarrow -\frac{1}{2} XX^T \lambda = y$$
+		$$\Rightarrow \lambda = -2 (XX^T)^{-1} y$$
+		\begin{center}
+			\hl{$\Rightarrow w = X^T (XX^T)^{-1} y$}
+		\end{center}
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 5}
+Use the SVD \( X = U \Sigma V^T \) and simplify the solution.
+\begin{qsolve}
+	\begin{qsolve}[]
+		if we substitute the value of \(X\) in the equation \(w = X^T (XX^T)^{-1} y\), we get:
+		$$w = (U \Sigma V^T)^T ((U \Sigma V^T) (U \Sigma V^T)^T)^{-1} y$$
+		$$w = V \Sigma^T U^T (U \Sigma V^T V \Sigma^T U^T)^{-1} y$$
+		$$w = V \Sigma^T U^T (U \Sigma \Sigma^T U^T)^{-1} y$$
+		$$w = V \Sigma^{\dagger} U^T y$$
+		\begin{center}
+			\hl{$w = V \Sigma^{\dagger} U^T y$}
+		\end{center}
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 6}
+You will notice that the minimum norm solution is of the form \( w^* = B y \). What happens if we multiply \( X \) from the right by matrix \( B \)? For this reason, matrix \( B \) is called the right inverse minimum norm.
+\begin{qsolve}
+	\begin{qsolve}[]
+		in the previous part we found that the minimum-norm solution has the form \( w^* = By \), which $B = V \Sigma^{\dagger} U^T$. if we multiply \(X\) from the right by the matrix \(B\), we get:
+		$$ BX = V \Sigma^{\dagger} U^T U \Sigma V^T = V \Sigma^{\dagger} \Sigma V^T$$
+		as it is mentioned the matrix $\Sigma$ is a $m \times n $ matrix with non-zero singular values on the diagonal, so the product of $\Sigma^{\dagger} \Sigma$ is a $n \times n$ diagonal matrix with $1$ on the first $m$ diagonal and $0$ on the rest. so the product of $V \Sigma^{\dagger} \Sigma V^T$ is equal to $V I_m V^T$ which $I_m$ is an $n \times n$ matrix that has $1$ on the first $m$ diagonal and $0$ on the rest. hence the product of $BX$ is equal to $I_m$. so the matrix $B$ is called the right pseudoinverse of the minimum-norm solution.
+	\end{qsolve}
+\end{qsolve}

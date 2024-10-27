@@ -1,0 +1,106 @@
+\section{Question 4}
+\subsection{Part 1}
+Consider a linear regression problem that includes \( n \) data points and \( d \) features. When \( n = d \), the matrix \( F \in \mathbb{R}^{n \times n} \) has the biggest eigenvalue \( \alpha \) and the smallest eigenvalue with a very small value. We have \( y = Fw^* + \epsilon \). If we calculate \( \hat{w}_{inv} = F^{-1} y \), cause of small singular value of F and having noise we see that \( \|\hat{w}_{inv} - w^*\| = 10^{10} \).
+
+Instead of inverting \( F \), assume we use gradient descent. We repeat gradient descent \( k \) times starting from \( w = 0 \) with a loss function \( \ell(w) = \frac{1}{2} \| y - Fw \|^2 \). We assume that the learning rate \( \eta \) is small enough to ensure the stability of gradient descent for the given problem (this is an important point).
+
+The gradient descent update formula for \( t > 0 \) is as follows:
+\[
+w_t = w_{t-1} - \eta \left( F^T \left( F w_{t-1} - y \right) \right)
+\]
+
+We are looking for the error \( \| w_k - w^* \|_2 \). We want to show that, in the worst case, this error can be bounded by the following:
+\[
+\| w_k - w^* \|_2 \leq k \eta \alpha \| y\|_2 + \| \hat{w}_l \|_2
+\]
+In other words, the error cannot go out of bounds, at least not too quickly.
+
+To complete this task, we only need to prove the key idea using the triangle inequality and the norm properties, as the result will follow naturally.
+
+Show that for \( t > 0 \):
+\[
+\| w_t \|_2 \leq \| w_{t-1} \|_2 + \eta \alpha \| y \|_2
+\]
+
+\begin{qsolve}
+	\begin{qsolve}[]
+		The gradient descent update rule is:
+		$$
+		w_t = w_{t-1} - \eta F^T (F w_{t-1} - y)
+		$$
+		This can be expanded as:
+		$$
+		w_t = w_{t-1} - \eta F^T F w_{t-1} + \eta F^T y
+		$$
+		if we factorize \( w_{t-1} \) from the equation, we can simplify the equation as:
+		$$
+		w_t = (I - \eta F^T F) w_{t-1} + \eta F^T y
+		$$
+		now we take the norm of both sides:
+		$$
+		\| w_t \|_2 = \| (I - \eta F^T F) w_{t-1} + \eta F^T y \|_2
+		$$
+		if we use the triangle inequality, we can bound the above equation as:
+		\splitqsolve[\splitqsolve]
+		$$
+		\| w_t \|_2 \leq \left\| (I - \eta F^T F) w_{t-1} \right\|_2 + \left\| \eta F^T y \right\|_2
+		$$
+		now we have 2 terms in the right side of the equation, we can bound each term separately:
+		$$
+		\left\| (I - \eta F^T F) w_{t-1} \right\|_2 \leq \left\| I - \eta F^T F \right\|_2 \left\| w_{t-1} \right\|_2
+		$$
+		The spectral norm \( \left\| I - \eta F^T F \right\|_2 \) can be bounded using the eigenvalues of \( F^T F \). Let \( \lambda_{\min} \) and \( \lambda_{\max} \) be the smallest and largest eigenvalues of \( F^T F \), respectively.
+		Since \( \eta \) is small enough to ensure stability, and the smallest eigenvalue is very small (\( \lambda_{\min} \approx 0 \)), we have:
+		$$
+		\left\| I - \eta F^T F \right\|_2 = \max_{i} \left|1 - \eta \lambda_i\right| = 1 - \eta \lambda_{\min} \approx 1
+		$$
+		so we can bound the first term as:
+		$$
+		\left\| (I - \eta F^T F) w_{t-1} \right\|_2 \leq \left\| w_{t-1} \right\|_2 \quad (1)
+		$$
+		Now we bound the second term:
+		$$
+		\left\| \eta F^T y \right\|_2 = \eta \left\| F^T y \right\|_2 \leq \eta \left\| F^T \right\|_2 \left\| y \right\|_2
+		$$
+		Since \( \left\| F^T \right\|_2 = \left\| F \right\|_2 \), and the largest eigenvalue of \( F \) is \( \alpha \):
+		$$
+		\left\| \eta F^T y \right\|_2 \leq \eta \alpha \left\| y \right\|_2 \quad (2)
+		$$
+		Combining equations (1) and (2), we get:
+		$$
+		\| w_t \|_2 \leq \| w_{t-1} \|_2 + \eta \alpha \| y \|_2
+		$$
+		and this completes the proof.
+	\end{qsolve}
+\end{qsolve}
+If gradient descent cannot diverge, what can be said about the eigenvalues of \( (I - \eta F^T F) \), what shape do the eigenvalues take?
+\begin{qsolve}
+	\begin{qsolve}[]
+		Let \( \lambda_i \) be the eigenvalues of \( F^T F \). Since \( F^T F \) is a symmetric positive semi-definite matrix, all its eigenvalues are non-negative:
+		$$
+		\lambda_i \geq 0 \quad \text{for all } i.
+		$$
+		The eigenvalues of the matrix \( I - \eta F^T F \) are given by:
+		$$
+		\mu_i = 1 - \eta \lambda_i.
+		$$
+		For the gradient descent algorithm to \textbf{not diverge}, the magnitude of each eigenvalue \( \mu_i \) must be less than or equal to 1:
+		\splitqsolve[\splitqsolve]
+		$$
+		| \mu_i | \leq 1.
+		$$
+		This condition ensures that the iterative updates do not amplify the errors, keeping the algorithm stable. now if we substitute the expression for \( \mu_i \) in the above inequality, we get:
+		$$
+		|1 - \eta \lambda_i| \leq 1 \implies -1 \leq 1 - \eta \lambda_i \leq 1
+		$$
+		which simplifies to:
+		$$
+		0 \leq \eta \lambda_i \leq 2.
+		$$
+		so we can say that $0 \leq \eta \leq \frac{2}{\lambda_i}$, and this can simplify to:
+		$$
+		0 \leq \eta \leq \frac{2}{\lambda_{max}}
+		$$
+		If gradient descent cannot diverge, the eigenvalues of \( (I - \eta F^T F) \) must be real numbers within the interval \( [ -1, 1 ] \). They take the shape of values that, when applied iteratively, do not cause the weight vector to grow unboundedly. This ensures the stability and convergence of the gradient descent algorithm.
+	\end{qsolve}
+\end{qsolve}

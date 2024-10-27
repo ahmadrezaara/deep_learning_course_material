@@ -1,0 +1,112 @@
+\section{Question 1}
+\subsection{Part 1}
+In the case of linear separability, if one of the training samples is removed, does the decision boundary move towards the removed point, move away from it, or remain the same? Explain your answer. Now, if we consider the decision boundary for logistic regression, will the decision boundary change or remain the same? Explain your answer. (There is no need to mention the direction of the change.)
+\begin{qsolve}
+	\begin{qsolve}[]
+		in SVM if the point is a support vector, the decision boundary will move away from the removed point. Hence the decision boundary will remain the same if the point is not a support vector. In logistic regression, the boundry will change if any of the points are removed. this is because in logistic regression the boundry is determined by the probability of the points being in a certain class and removing a point will change the probability of the points being in a certain class so the boundry will change.
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 2}
+Recall from the class notes that if we allow some of the classifications in the training data to be incorrect, the optimization of the SVM (soft margin) is as follows:
+
+\[
+\min_{w,\xi_i} \frac{1}{2} \|w\|^2 + C \sum_{i=1}^{n} \xi_i
+\]
+subject to:
+\[
+y_i(w^T x_i) \geq 1 - \xi_i \quad \forall i \in \{1,\dots,n\}
+\]
+\[
+\xi_i \geq 0, \quad \forall i \in \{1,\dots,n\}
+\]
+
+where \(\xi_i\) are referred to as slack variables. Suppose \(\xi_1, \dots, \xi_n\) have been optimally computed. Use \(\xi\) to obtain an upper bound on the number of misclassified samples.
+\begin{qsolve}
+	\begin{qsolve}[]
+		
+In the soft-margin SVM formulation:
+\splitqsolve[\splitqsolve]
+\[
+\min_{w,\xi_i} \frac{1}{2} \|w\|^2 + C \sum_{i=1}^{n} \xi_i
+\]
+
+the slack variables \(\xi_i\) represent the degree to which each data point fails to meet the margin requirement \(y_i(w^T x_i) \geq 1\). Specifically:
+\begin{enumerate}
+	\item If \(\xi_i = 0\), then the data point \(x_i\) lies correctly on the correct side of the margin.
+	\item If \(0 < \xi_i \leq 1\), then \(x_i\) is on the correct side of the decision boundary but within the margin.
+	\item If \(\xi_i > 1\), then \(x_i\) is misclassified because it fails to meet the condition \(y_i(w^T x_i) \geq 0\).
+\end{enumerate}
+For a data point to be misclassified, \(\xi_i\) must be strictly greater than 1. Therefore, we can count the number of data points where \(\xi_i > 1\) to determine the misclassified samples.
+
+Now, we know that:
+\[
+\sum_{i=1}^{n} \xi_i
+\]
+is the total penalty added in the objective function due to all slack variables. Since each misclassified sample contributes at least 1 to this total, the upper bound on the number of misclassified samples is simply the total sum of all \(\xi_i > 0\) values. so the boundary is:
+\begin{center}
+	\hl{$ \sum_{i=1}^{n} \mathbb{I}(\xi_i > 1) $}
+\end{center}
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 3}
+In SVM optimization, what is the role of the coefficient \(C\)? Briefly explain your answer by considering two extreme cases, i.e., \(C \to 0\) and \(C \to \infty\).
+\begin{qsolve}
+	\begin{qsolve}[]
+		The coefficient \(C\) in the SVM optimization problem is a regularization parameter that controls the trade-off between the margin width and the training error. It balances the importance of maximizing the margin and minimizing the classification error. The role of \(C\) can be understood by considering two extreme cases:
+		When \(C \to 0\), the regularization term becomes negligible, and the optimization problem becomes:
+		\[
+		\min_{w,\xi_i} \frac{1}{2} \|w\|^2
+		\]
+		In this case, the model will focus solely on maximizing the margin, and the decision boundary will be determined by the support vectors only.
+		The model will be highly sensitive to outliers and noise in the data, potentially leading to overfitting.
+		When \(C \to \infty\), the regularization term becomes dominant, and the optimization problem becomes:
+		\splitqsolve[\splitqsolve]
+		\[
+		\min_{w,\xi_i} C \sum_{i=1}^{n} \xi_i
+		\]
+		In this case, the model will focus on minimizing the classification error, even at the cost of a narrower margin. The decision boundary will be less sensitive to individual data points, leading to a more robust model that generalizes better to unseen data.
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 4}
+Compare hard-margin SVM and logistic regression when the two classes are linearly separable. Mention any notable differences.
+\begin{qsolve}
+	\begin{qsolve}[]
+		in the term of objective function hard-margin SVM is as follows:
+		\[
+		\min_{w} \frac{1}{2} \|w\|^2
+		\]
+		this approach tries to maximize the margin between the two classes and the decision boundary is determined by the support vectors only. In contrast, logistic regression uses the following objective function:
+		\[
+		\min_{w} \sum_{i=1}^{n} \log(1 + e^{-y_i(w^T x_i)})
+		\]
+		this approach tries to maximize the likelihood of the data and the decision boundary is determined by the probability of the points being in a certain class. The main difference between the two approaches is that hard-margin SVM focuses on maximizing the margin, while logistic regression focuses on maximizing the likelihood of the data. 
+		output of hard margin SVM is a deterministic boundary without probability estimates. A point's classification depends on which side of the boundary it falls.Hence the output of logistic regression is a probabilistic boundary with probability estimates. A point's classification depends on the probability of it being in a certain class.
+		and in term of robustness, hard-margin SVM is sensitive to outliers and noise in the data, as it tries to find the maximum margin. Logistic regression is more robust to outliers and noise, as it tries to maximize the likelihood of the data.
+	\end{qsolve}
+\end{qsolve}
+\subsection{Part 5}
+Compare soft-margin SVM and logistic regression when the two classes are not linearly separable. Mention any notable differences.
+\begin{qsolve}
+	\begin{qsolve}[]
+		In terms of objective function, soft-margin SVM is as follows:
+
+		\[
+		\min_{w, \xi_i} \frac{1}{2} \|w\|^2 + C \sum_{i=1}^{n} \xi_i
+		\]
+
+		where \( \xi_i \) are slack variables that allow some points to fall on the wrong side of the margin. This approach tries to maximize the margin while allowing some classification errors, which makes it suitable for non-linearly separable data. In contrast, logistic regression uses the following objective function:
+
+		\[
+		\min_{w} \sum_{i=1}^{n} \log(1 + e^{-y_i(w^T x_i)})
+		\]
+
+		This approach tries to maximize the likelihood of the data, fitting a decision boundary that reflects the probability of each point belonging to a particular class. Logistic regression does not attempt to maximize the margin; instead, it optimizes for a probability-based decision boundary.
+
+		The main difference between these approaches is that soft-margin SVM focuses on a balance between maximizing the margin and minimizing classification errors, while logistic regression focuses entirely on maximizing the likelihood of the data without directly optimizing for a margin.
+
+		The output of soft-margin SVM is still a deterministic boundary, but it allows some flexibility for points that do not fit perfectly on either side of the margin. Logistic regression, on the other hand, provides a probabilistic boundary with probability estimates, meaning that each point is assigned a probability of being in a certain class.
+
+		In terms of robustness, soft-margin SVM is more robust than hard-margin SVM because it allows some misclassifications, but it can still be affected by outliers, especially when \(C\) is large. Logistic regression is generally more robust to outliers since it maximizes the likelihood across all points and does not enforce a strict margin.
+
+	\end{qsolve}
+\end{qsolve}
