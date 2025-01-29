@@ -1,0 +1,83 @@
+\section{Q2}
+
+In this exercise, we aim to examine Densely Connected Convolutional Networks. To study this network, you can refer to the link below.
+
+\href{https://arxiv.org/pdf/1608.06993}{Densely Connected Convolutional Networks}
+
+\subsection{part a}
+Explain the primary differences between ResNet's residual connections and DenseNet's dense connections. Briefly describe the advantages of each case.
+\begin{qsolve}
+    \begin{qsolve}[]
+        In ResNet, residual connections allow the input to be added to the output of a layer, forming a residual block. This addition helps gradients flow more easily during backpropagation, alleviating the vanishing gradient problem and allowing for deeper networks. The primary advantage of ResNet's residual connections is that they simplify optimization by ensuring that the identity function can be learned, improving training stability.
+
+        In contrast, DenseNet uses dense connections, where each layer receives input from all previous layers. This means that the output of every layer is concatenated with the outputs of earlier layers and passed through subsequent layers. DenseNet's advantage lies in improved feature reuse, as each layer can access all previous feature maps, leading to more efficient learning and better gradient flow. DenseNet also reduces the number of parameters compared to traditional networks by avoiding redundant feature learning.
+    
+    \end{qsolve}
+\end{qsolve}
+\subsection{part b}
+Explain how DenseNet reduces the vanishing gradient problem and what the computational benefits are.
+\begin{qsolve}
+    \begin{qsolve}[]
+        DenseNet reduces the vanishing gradient problem through its dense connections, where each layer receives input from all previous layers.
+
+        The computational benefits of DenseNet arise from its architecture of dense connections. Since each layer receives input from all previous layers, DenseNet promotes feature reuse, which allows the network to learn more compact and efficient representations. 
+        \splitqsolve[\splitqsolve]
+        This leads to fewer parameters compared to traditional networks, as DenseNet does not require each layer to learn entirely new feature maps but can reuse existing ones.
+        As a result, DenseNet networks tend to be more parameter-efficient while achieving competitive performance. Additionally, the reduced parameter count decreases memory usage and accelerates training, making DenseNet computationally efficient despite its depth.
+    \end{qsolve}
+\end{qsolve}
+\subsection{part c}
+Propose a practical problem where the use of DenseNet architecture is suitable. Provide a real-world example that supports this.
+\begin{qsolve}
+    \begin{qsolve}[]
+        DenseNet is particularly suitable for tasks where feature reuse and efficient gradient flow are essential, such as medical image analysis. In medical imaging, the complexity and fine-grained details of the images require deep networks to capture subtle patterns across various scales. DenseNet's architecture, with its dense connections, allows for the efficient sharing and reuse of features, making it ideal for extracting complex features from high-resolution medical images like CT scans, MRI scans, or X-rays. 
+
+        A real-world example where DenseNet is highly effective is in the task of detecting tumors in medical images. For instance, in a study for breast cancer detection, DenseNet was used to analyze mammogram images. The dense connections allowed the network to reuse feature maps from earlier layers, helping the model focus on key regions in the images without needing to learn redundant representations. This resulted in higher accuracy and better generalization, especially in challenging cases with small or ambiguous tumors.
+
+    \end{qsolve}
+\end{qsolve}
+
+\subsection{part d}
+If the input data is multi-modal (e.g., text and image), how can DenseNet be adapted for processing such data? Draw and justify your proposed architecture.
+\begin{qsolve}
+    \begin{qsolve}[]
+        In the case of multi-modal data (e.g., text and image), DenseNet can be adapted as follows:
+
+        \begin{center}
+            \begin{tikzpicture}[node distance=1.8cm]
+            
+            % Text Branch
+            \node (textdata) [block] {Text Data (e.g., words, sentences)};
+            \node (textencoder) [block, below=of textdata] {Text Encoder (Transformer or LSTM)};
+            \node (textfeatures) [block, below=of textencoder] {DenseNet for Text Features};
+            
+            % Image Branch
+            \node (imagedata) [block, right=4cm of textdata] {Image Data (e.g., pixels, patches)};
+            \node (imagefeatures) [block, below=of imagedata] {DenseNet for Image Features};
+            
+            % Fusion Layer
+            \node (fusion) [block, below=3.2cm of textfeatures, text width=5cm] {Fusion Layer (Concatenation of Text and Image Features)};
+            
+            % Fully Connected Layer
+            \node (output) [block, below=2cm of fusion] {Fully Connected Layer (Prediction or Classification)};
+            
+            % Arrows for Text Branch
+            \draw[line] (textdata) -- (textencoder);
+            \draw[line] (textencoder) -- (textfeatures);
+            \draw[line] (textfeatures.south) -- ++(0,-0.5) -| (fusion.north);
+            
+            % Arrows for Image Branch
+            \draw[line] (imagedata) -- (imagefeatures);
+            \draw[line] (imagefeatures.south) -- ++(0,-0.5) -| (fusion.north);
+            
+            % Arrow to Output
+            \draw[line] (fusion) -- (output);
+            
+            \end{tikzpicture}
+        \end{center}
+        In this architecture, DenseNet is used to process the image data by leveraging its dense connections to promote feature reuse and effective gradient flow. The text data, on the other hand, is processed using a separate encoder like a Transformer or LSTM to capture the sequential or contextual relationships between words.
+
+After extracting features from both modalities, the features are concatenated in the fusion layer.
+Finally, a fully connected layer is used to make the final predictions or classifications based on the combined feature representation.
+    \end{qsolve}
+\end{qsolve}

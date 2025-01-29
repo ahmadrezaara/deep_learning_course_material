@@ -1,0 +1,90 @@
+\section{Question 5 (40 points)}
+The error function in a network with Gaussian Dropout applied is described as follows:
+
+\[
+J_1 = 0.5 \left( y_d - \sum_{k=1}^n \delta_k W_k x_k \right)^2
+\]
+
+where \( \delta_k \sim \mathcal{N}(1, \sigma^2) \). Simplify the expected value of the gradient of the objective function with respect to the variable \( W_i \) as much as possible.
+\begin{qsolve}
+	\begin{qsolve}[]
+		The gradient of \( J_1 \) with respect to \( W_i \) is:
+		\[
+		\frac{\partial J_1}{\partial W_i} = -\delta_i x_i \left( y_d - \sum_{k=1}^n \delta_k W_k x_k \right).
+		\]
+
+		Now, we compute \( \mathbb{E} \left[ \frac{\partial J_1}{\partial W_i} \right] \):
+		\[
+		\mathbb{E} \left[ \frac{\partial J_1}{\partial W_i} \right] = \mathbb{E} \left[ -\delta_i x_i \left( y_d - \sum_{k=1}^n \delta_k W_k x_k \right) \right].
+		\]
+		using the linearity of expectation, we can expand this to:
+		\[
+		\mathbb{E} \left[ \frac{\partial J_1}{\partial W_i} \right] = -x_i \left( \mathbb{E} \left[ \delta_i \right] y_d - \sum_{k=1}^n W_k x_k \mathbb{E} \left[ \delta_i \delta_k \right] \right).
+		\]
+		first we compute \( \mathbb{E} \left[ \delta_i \right] \) and \( \mathbb{E} \left[ \delta_i \delta_k \right] \). as it is mentioned in the question, \( \delta_i \sim \mathcal{N}(1, \sigma^2) \).so we have:
+		\[
+		\mathbb{E} \left[ \delta_i \right] = 1
+		\]
+		now for computing \( \mathbb{E} \left[ \delta_i \delta_k \right] \), we have two cases. if \( i = k \), then:
+		\[
+		\mathbb{E} \left[ \delta_i \delta_k \right] = \mathbb{E} \left[ \delta_i^2 \right] = \text{Var}(\delta_i) + \mathbb{E} \left[ \delta_i \right]^2 = \sigma^2 + 1.
+		\]
+		if \( i \neq k \), then:
+		\[
+		\mathbb{E} \left[ \delta_i \delta_k \right] = \mathbb{E} \left[ \delta_i \right] \mathbb{E} \left[ \delta_k \right] = 1 \times 1 = 1.
+		\]
+		the last term comes from the fact that the two random variables are independent.
+		so we have:
+		\[
+		\mathbb{E} \left[ \delta_i \delta_k \right] = \begin{cases}
+		\sigma^2 + 1 & \text{if } i = k, \\
+		1 & \text{if } i \neq k.
+		\end{cases}
+		\]
+		Substitute these values back into the expression:
+		\splitqsolve[\splitqsolve]
+		\[
+		\mathbb{E} \left[ \frac{\partial J_1}{\partial W_i} \right] = -x_i \left( y_d - \sum_{k=1}^n W_k x_k \mathbb{E} \left[ \delta_i \delta_k \right] \right).
+		\]
+		Or equivalently:
+		\[
+		\mathbb{E} \left[ \frac{\partial J_1}{\partial W_i} \right] = -x_i \left( y_d - W_i x_i (\sigma^2 + 1) - \sum_{\substack{k=1 \\ k \neq i}}^n W_k x_k \right).
+		\]
+	\end{qsolve}
+\end{qsolve}
+Can you define a form of regularization using this type of Dropout? If so, introduce both Regularized and Non-Regularized targets accordingly.
+\begin{qsolve}
+	\begin{qsolve}[]
+		Without regularization, the objective function is simply the squared error function \( J_1 \), which we are trying to minimize. It is given by:
+		\[
+		J_1 = 0.5 \left( y_d - \sum_{k=1}^n W_k x_k \right)^2,
+		\]
+		
+		When Gaussian Dropout is applied, the objective function becomes as follows which $\delta_k \sim \mathcal{N}(1, \sigma^2)$: 
+		\[
+		J_{1,\text{reg}} = 0.5 \mathbb{E}_{\delta} \left[ \left( y_d - \sum_{k=1}^n \delta_k W_k x_k \right)^2 \right],
+		\]
+
+		The expectation in \( J_{1,\text{reg}} \) can be expanded as follows:
+
+		\[
+		J_{1,\text{reg}} = 0.5 \left( y_d - \sum_{k=1}^n W_k x_k \right)^2 + 0.5 \sigma^2 \sum_{k=1}^n W_k^2 x_k^2.
+		\]
+
+		
+		The first term, \( 0.5 \left( y_d - \sum_{k=1}^n W_k x_k \right)^2 \), is the original (non-regularized) objective function.
+		
+		The second term, \( 0.5 \sigma^2 \sum_{k=1}^n W_k^2 x_k^2 \), represents the regularization term added by Gaussian Dropout.
+		Non-Regularized Target can be shown as:
+		\[
+		J_1 = 0.5 \left( y_d - \sum_{k=1}^n W_k x_k \right)^2.
+		\]
+
+		and Regularized Target (with Gaussian Dropout) as:
+		\[
+		J_{1,\text{reg}} = 0.5 \left( y_d - \sum_{k=1}^n W_k x_k \right)^2 + 0.5 \sigma^2 \sum_{k=1}^n W_k^2 x_k^2.
+		\]
+		
+
+	\end{qsolve}
+\end{qsolve}

@@ -1,0 +1,282 @@
+\section{Q1}
+\subsection{part A}
+Consider a standard convolutional layer with a kernel of size $K \times K$, stride $= 1$, and Same Padding applied to a feature map of dimensions $H \times W \times M$ consisting of $M$ channels. Let the number of filters in this layer be $N$. Derive the output size of the layer and compute the computational cost (number of multiply-accumulate operations). Express your results in terms of $H, W, M, N, K$.
+    
+\begin{qsolve}
+    \begin{qsolve}[]
+        The output spatial dimensions remain the same as the input when same padding is used, so the output dimensions are:
+
+        \[
+        \text{Output Height (H')} = H
+        \]
+        \[
+        \text{Output Width (W')} = W
+        \]
+
+        Since the number of filters in the layer is $N$, the number of output channels is:
+
+        \[
+        \text{Output Channels} = N
+        \]
+
+        Thus, the final output size is:
+
+        \[
+        H \times W \times N
+        \]
+        
+        The computational cost of a convolutional layer is given by the number of multiply-accumulate operations. The number of operations required to compute a single output element is equal to the number of weights in the kernel, which is $K \times K \times M$, so we can say that:
+
+        \[
+        \text{Total Operations} = H \times W \times N \times K \times K \times M
+        \]
+
+    \end{qsolve}
+\end{qsolve}
+    
+\subsection{part B}
+Now, consider a convolutional network where the input is a color image of size $128 \times 128 \times 3$. Assume the network consists of three consecutive convolutional layers with kernels of size $5 \times 5$, padding $= 2$, stride $= 2$, and ReLU activation functions. The layers have $64$, $128$, and $256$ filters, respectively. Answer the following:
+\begin{itemize}
+    \item Compute the output size and the computational cost of each convolutional layer.
+    \item Examine the receptive field of the last convolutional layer. How does the number of neurons in the final layer depend on the input image resolution?
+\end{itemize}
+
+\begin{qsolve}
+    \begin{qsolve}[]
+        The output size for a convolutional layer is given by:
+        \[
+        H' = \left\lfloor \frac{H + 2P - K}{S} \right\rfloor + 1,
+        \]
+        \[
+        W' = \left\lfloor \frac{W + 2P - K}{S} \right\rfloor + 1,
+        \]
+        The computational cost (number of multiply-accumulate operations) for a single convolutional layer is:
+        \[
+        \text{Cost} = H' \cdot W' \cdot N \cdot K^2 \cdot M,
+        \]
+        based on these formula we can say that:
+        \begin{itemize}
+            \item For the first convolutional layer:
+            \[
+            H' = W' = \left\lfloor \frac{128 + 2 \cdot 2 - 5}{2} \right\rfloor + 1 = 64.
+            \]
+            Number of output channels: $N = 64$.
+            \[
+            \text{Cost} = 64 \times 64 \times 64 \times 5^2 \times 3 
+            \]
+            \item For the second convolutional layer:
+            \[
+            H' = W' = \left\lfloor \frac{64 + 2 \cdot 2 - 5}{2} \right\rfloor + 1 = 32.
+            \]
+            Number of output channels: $N = 128$.
+            \[
+            \text{Cost} = 32 \times 32 \times 128 \times 5^2 \times 64 
+            \]
+            \item For the third convolutional layer:
+            \[
+            H' = W' = \left\lfloor \frac{32 + 2 \cdot 2 - 5}{2} \right\rfloor + 1 = 16.
+            \]
+            Number of output channels: $N = 256$.
+            \[
+            \text{Cost} = 16 \times 16 \times 256 \times 5^2 \times 128
+            \]
+        \end{itemize}
+
+        For layer $l$, the receptive field size $R_l$ can be computed recursively as:
+        \[
+        R_l = R_{l-1} + (K - 1) \cdot S_{l-1},
+        \]
+        where:
+        \splitqsolve[\splitqsolve]
+        \begin{itemize}
+            \item $R_{l-1}$ is the receptive field size of the previous layer.
+            \item $K$ is the kernel size.
+            \item $S_{l-1}$ is the stride of the previous layer.
+        \end{itemize}
+        so we can say that:
+        \begin{itemize}
+            \item For the first convolutional layer:
+            \[
+            R_1 = 5.
+            \]
+            \item For the second convolutional layer:
+            \[
+            R_2 = 5 + (5 - 1) \times 2 = 13.
+            \]
+            \item For the third convolutional layer:
+            \[
+            R_3 = 13 + (5 - 1) \times 2 = 21.
+            \]
+        \end{itemize}
+        As the input resolution increases, each convolutional layer produces larger feature maps. 
+        Because the stride reduces the spatial dimensions of the feature maps by a factor of $2$ at each layer, the number of neurons in the final layer scales approximately linearly with the input resolution.
+        For example, doubling the input resolution will roughly double the height and width of the feature maps at every layer, leading to a fourfold increase in the number of neurons in the final layer.        
+
+    \end{qsolve}
+\end{qsolve}
+\subsection{part C}
+This section deals with Depthwise Separable Convolutions used in architectures like MobileNet. Address the following:
+\begin{itemize}
+    \item Derive the number of parameters and computational cost for a depthwise separable convolutional layer and compare it with a standard convolutional layer (from Part (a)).
+    \item Revisit the network in Part (b). Replace the second and third convolutional layers with depthwise separable convolutions (similar to MobileNet). Compare the number of parameters and computational cost between the standard convolutional layers and the depthwise separable layers.
+\end{itemize}
+
+\begin{qsolve}
+    \begin{qsolve}[]
+        For the depthwise convolution:
+        \[
+        \text{Params (depthwise)} = M \cdot K^2
+        \]
+        \[
+        \text{Cost (depthwise)} = H \cdot W \cdot M \cdot K^2
+        \]
+        \splitqsolve[\splitqsolve]
+        For the pointwise convolution:
+        \[
+        \text{Params (pointwise)} = M \cdot N
+        \]
+        \[
+        \text{Cost (pointwise)} = H \cdot W \cdot M \cdot N
+        \]
+        For the entire depthwise separable convolution:
+        \[
+        \text{Params (depthwise separable)} = M \cdot K^2 + M \cdot N
+        \]
+        \[
+        \text{Cost (depthwise separable)} = H \cdot W \cdot M \cdot K^2 + H \cdot W \cdot M \cdot N
+        \]
+        The depthwise separable convolution reduces both the number of parameters and computational cost.
+        \begin{itemize}
+            \item For the first convolutional layer:
+            \[
+            \text{Params (standard)} = 5^2 \cdot 3 \cdot 64
+            \]
+            \[
+            \text{Cost (standard)} = 64 \times 64 \times 5^2 \times 3
+            \]
+            \item For the second convolutional layer:
+            \[
+            \text{Params (standard)} = 5^2 \cdot 64 + 64 \cdot 128
+            \]
+            \[
+            \text{Cost (standard)} = 32 \times 32 \times 64 \times 5^2 \times 3 + 32 \times 32 \times 128 \times 64
+            \]
+            \item For the third convolutional layer:
+            \[
+            \text{Params (standard)} = 5^2 \cdot 128 + 128 \cdot 256
+            \]
+            \[
+            \text{Cost (standard)} = 16 \times 16 \times 128 \times 5^2 \times 64 + 16 \times 16 \times 256 \times 128
+            \]
+        \end{itemize}
+
+        now by replacing the second and third convolutional layers with depthwise separable convolutions:
+        
+        for second layer:
+        \begin{itemize}
+            \item Parameters:
+            \[
+            \text{Params (depthwise separable)} = 64 \cdot 5^2 + 64 \cdot 128
+            \]
+            \item Computational cost:
+            \[
+            \text{Cost (depthwise separable)} = 32 \cdot 32 \cdot (64 \cdot 5^2 + 64 \cdot 128)
+            \]
+        \end{itemize}
+        for third layer:
+        \begin{itemize}
+            \item Parameters:
+            \[
+            \text{Params (depthwise separable)} = 128 \cdot 5^2 + 128 \cdot 256
+            \]
+            \item Computational cost:
+            \[
+            \text{Cost (depthwise separable)} = 16 \cdot 16 \cdot (128 \cdot 5^2 + 128 \cdot 256)
+            \]
+        \end{itemize}
+        \splitqsolve[\splitqsolve]
+        by comparing results of this part with the previous part we can see that we have about 86\% reduction in the number of parameters and 91\% reduction in computational cost in second layer and 92\% reduction in the number of parameters and 94\% reduction in computational cost in the third layer.
+    \end{qsolve}
+\end{qsolve}
+\subsection{part D}
+Assume a classification task with \textbf{200 classes}. To perform this task, we add the following layers:
+
+\begin{itemize}
+    \item \textbf{Flatten layer} that converts the output of the final convolutional layer into a 1D vector.
+    \item \textbf{Fully Connected (FC) layer} with \textbf{200 output neurons}, followed by a \textbf{SoftMax activation}.
+\end{itemize}
+
+You are required to:
+\begin{itemize}
+    \item \textbf{Compute the total number of parameters} introduced by these layers.
+    \item \textbf{Compare the number of parameters} in the FC layer with the total number of parameters in the convolutional layers from Part (b) (standard convolution in layers 2 and 3) and Part (c) (depthwise convolution in layers 2 and 3).
+    \item \textbf{Discuss how the contribution of the Fully Connected layer's parameters can be reduced}, and analyze the impact of such reductions on the network's performance.
+\end{itemize}
+
+Specifically, you need to compute and compare the FC parameters in the following two cases:
+
+\begin{itemize}
+    \item After using \textbf{standard convolutions} in layers 2 and 3.
+    \item After using \textbf{depthwise convolutions} in layers 2 and 3.
+\end{itemize}
+
+\begin{qsolve}
+    \begin{qsolve}[]
+        
+        The output of the third convolutional layer is:
+        \[
+        16 \times 16 \times 256
+        \]
+        After the Flatten layer, this becomes a vector of size:
+        \[
+        16 \cdot 16 \cdot 256 = 65,536
+        \]
+
+        The Fully Connected (FC) layer maps this vector to 200 output neurons. The total number of parameters introduced by the FC layer includes:
+        \[
+        \text{Params (weights)} = 65,536 \cdot 200 = 13,107,200
+        \]
+        \[
+        \text{Params (biases)} = 200
+        \]
+        \splitqsolve[\splitqsolve]
+        so we can say that:
+        \[
+        \text{Params (FC)} = 13,107,200 + 200 = 13,107,400
+        \]
+        From Part (b), the number of parameters in the second and third convolutional layers with standard convolutions is:
+        \[
+        \text{Params (standard)} = 204,800 \, \text{(second layer)} + 819,200 \, \text{(third layer)} = 1,024,000
+        \]
+        From Part (c), the number of parameters in the second and third convolutional layers with depthwise separable convolutions is:
+        \[
+        \text{Params (depthwise separable)} = 9,792 \, \text{(second layer)} + 35,968 \, \text{(third layer)} = 45,760
+        \]
+        so the total number of parameters in the first approach is:
+        \[
+        1,024,000 + 13,107,400 = 14,131,400
+        \]
+        and in the second approach is:
+        \[
+        45,760 + 13,107,400 = 13,153,160
+        \]
+        the number of parameters in the FC layer is significantly higher than the number of parameters in the convolutional layers. 
+        to address this issue, we can use techniques like Global Average Pooling (GAP) and dimensionality reduction before the FC layer.
+        GAP reduces the spatial dimensions of the feature maps to 1x1, which allows us to directly apply the FC layer without flattening the feature maps.
+        Dimensionality reduction techniques like 1x1 convolutions can be used to reduce the number of channels before the FC layer, which can help reduce the number of parameters and computational cost.
+
+        these methods have some advantages like:
+        \begin{itemize}
+            \item Reducing the number of parameters in the FC layer can help reduce overfitting, as it reduces the model's capacity.
+            \item Reducing the number of parameters can also help speed up training and inference, as there are fewer parameters to update and compute.
+            \item Using dimensionality reduction techniques can help capture more abstract features in the feature maps before the FC layer, which can improve the model's performance.
+        \end{itemize}
+        also they have some disadvantages like:
+        \begin{itemize}
+            \item Reducing the number of parameters in the FC layer may reduce the model's capacity to learn complex patterns, which can lead to underfitting.
+            \item Dimensionality reduction techniques like 1x1 convolutions may introduce additional non-linearity to the model, which can make it harder to train.
+        \end{itemize}
+        
+
+    \end{qsolve}
+\end{qsolve}

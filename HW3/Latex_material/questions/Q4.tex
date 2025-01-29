@@ -1,0 +1,52 @@
+\newpage
+\section{Q4}
+
+In the field of object detection, YOLO (You Only Look Once) algorithms are one-stage, real-time detection systems designed based on full image processing. YOLO versions are widely used in real-world projects due to their accuracy and real-time capabilities. To better understand the base versions of YOLO, you can refer to the following links:
+\begin{itemize}
+    \item \href{https://arxiv.org/abs/1506.02640}{You Only Look Once: Unified, Real-Time Object Detection}
+    \item \href{https://arxiv.org/abs/1612.08242}{YOLO9000: Better, Faster, Stronger}
+    \item \href{https://arxiv.org/abs/1804.02767}{YOLOv3: An Incremental Improvement}
+\end{itemize}
+\subsection{part a}
+Suppose an object detection model includes 80 classes. Compare the output of YOLOv1 and YOLOv3 in terms of the number of channels (depth) for each cell and explain the reasons for the differences (consider the number of bounding boxes per cell as described in the original papers).
+    \begin{qsolve}
+        \begin{qsolve}[]
+          For a model with \(C = 80\) classes, YOLOv1 predicts \(B = 2\) bounding boxes per cell. Each bounding box includes 4 coordinates (\(x, y, w, h\)) and 1 confidence score, while the grid cell as a whole predicts 80 class probabilities. This results in a total output depth of \(B \times 5 + C = 2 \times 5 + 80 = 90\) channels per cell.
+
+          In YOLOv3, \(B = 3\) bounding boxes are predicted per cell, with each bounding box outputting 4 coordinates, 1 objectness score, and 80 class probabilities. This gives \(B \times (4 + 1 + C) = 3 \times 85 = 255\) channels per cell. Since YOLOv3 performs detection at three different scales, it generates three separate sets of predictions.
+          
+          The differences in output depth arise from changes in design. YOLOv3 increases the number of bounding boxes per cell and introduces an explicit objectness score for each box. Unlike YOLOv1, it predicts class probabilities for each bounding box independently, enabling multi-label predictions. YOLOv3’s multi-scale prediction also enhances its ability to detect objects of different sizes, contributing to its increased output complexity. These changes make YOLOv3 more accurate and flexible but increase computational cost.
+          
+        \end{qsolve}
+    \end{qsolve}
+\subsection{part b}
+It is possible that some samples in the dataset may not belong to a specific class or belong to some classes simultanously. What solutions are provided in YOLOv3 to overcome this problem?
+    \begin{qsolve}
+      \begin{qsolve}[]
+        YOLOv3 addresses class ambiguity by replacing the softmax layer with independent logistic classifiers for class predictions. This allows the model to output probabilities for each class independently, enabling multi-label predictions where objects belong to multiple categories simultaneously. Additionally, the objectness score suppresses predictions for samples that do not belong to any class, ensuring robustness to background or unlabeled data.
+
+      \end{qsolve}
+    \end{qsolve}
+\subsection{part c}
+In YOLO papers, how do they prevent duplicate detection and differentiate between distinct objects in the proposed algorithm?
+    \begin{qsolve}
+      \begin{qsolve}[]
+        YOLO uses Non-Maximum Suppression (NMS) to eliminate duplicate detections by retaining only the highest-confidence bounding box when overlapping boxes have a high IoU. Distinct objects are differentiated by assigning each object to the grid cell containing its center and optimizing for IoU during training, ensuring accurate localization and separation.
+      \end{qsolve}
+        
+    \end{qsolve}
+\subsection{part d}
+The main issue with anchor boxes in YOLO has been discussed in YOLOv2 paper. Explain the problem and the solutions YOLOv2 provided in detail.
+    \begin{qsolve}
+      \begin{qsolve}[]
+        YOLOv2 identifies two main issues with anchor boxes: predefined dimensions do not match object distributions, and absolute location predictions cause training instability. To address these, YOLOv2 uses \(k\)-means clustering with an IoU-based distance metric to determine anchor box dimensions that better align with the dataset. Additionally, it predicts box centers relative to the grid cell with logistic constraints, stabilizing training and improving localization accuracy.
+      \end{qsolve}
+    \end{qsolve}
+\subsection{part e}
+What architectural differences exist between YOLOv3 and previous version?
+    \begin{qsolve}
+      \begin{qsolve}[]
+        YOLOv3 introduces several key architectural improvements over previous versions. It replaces the backbone network with Darknet-53, which includes residual connections for better gradient flow and deeper feature extraction. Unlike YOLOv2, which uses a single-scale detection approach, YOLOv3 predicts bounding boxes at three different scales, improving detection for objects of varying sizes. It also replaces the softmax function for classification with independent logistic classifiers, enabling multi-label predictions for overlapping classes. Additionally, YOLOv3 increases the number of anchor boxes per grid cell to three, enhancing detection flexibility and accuracy.
+
+      \end{qsolve}
+    \end{qsolve}
