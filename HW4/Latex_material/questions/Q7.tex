@@ -1,0 +1,109 @@
+\section{Question 7 (40 points)}
+Consider a neural network for multi-class classification with \( K \) classes, where the output layer uses the softmax activation function. The input to the softmax layer is \( z = [z_1, z_2, \dots, z_K]^T \in \mathbb{R}^K \), and the output of the softmax layer is defined as follows:
+
+\[
+\hat{y}_i = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}}, \quad i = 1, \dots, K.
+\]
+
+The true class labels are represented by a one-hot vector \( y = [y_1, y_2, \dots, y_K]^T \), where \( y_k = 1 \) if the \( k \)-th class is the correct class, and otherwise \( y_k = 0 \). The cross-entropy loss function is defined as:
+
+\[
+L(z, y) = -\sum_{k=1}^K y_k \log \hat{y}_k.
+\]
+\subsection{part 1}
+Prove that the gradient of the loss function with respect to \( z \) is given by:
+\[
+\nabla_z L = \hat{y} - y.
+\]
+\begin{qsolve}
+	\begin{qsolve}[]
+		differentiating \( L(z, y) \) with respect to \( z_i \). Substituting \( \hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^K e^{z_j}} \), we get:
+		\[
+		L(z, y) = -\sum_{k=1}^K y_k \log \left( \frac{e^{z_k}}{\sum_{j=1}^K e^{z_j}} \right).
+		\]		
+		we can simplify the above equation as:
+		\[
+		L(z, y) = -\sum_{k=1}^K y_k \left( z_k - \log \sum_{j=1}^K e^{z_j} \right).
+		\]
+		now we can differentiate \( L(z, y) \) with respect to \( z_i \) to get the gradient the derivative of first term is easily calculated. for the second term we have:
+		\[
+		\frac{\partial}{\partial z_i} \left( \sum_{k=1}^K y_k \log \left( \sum_{j=1}^K e^{z_j} \right) \right) = \sum_{k=1}^K y_k \cdot \frac{1}{\sum_{j=1}^K e^{z_j}} \cdot e^{z_i} = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}} \sum_{k=1}^K y_k.
+		\]
+		Since \( \sum_{k=1}^K y_k = 1 \) (as \( y \) is a one-hot vector), this simplifies to:
+		\[
+		\frac{\partial}{\partial z_i} \left( \sum_{k=1}^K y_k \log \left( \sum_{j=1}^K e^{z_j} \right) \right) = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}} = \hat{y}_i.
+		\]
+		so the gradient of the loss function with respect to \( z \) is given by:
+		\splitqsolve[\splitqsolve]
+		\[
+		\frac{\partial L}{\partial z_i} = -y_i + \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}} = -y_i + \hat{y}_i.
+		\]
+		Therefore, the gradient of the loss function with respect to \( z \) is \( \nabla_z L = \hat{y} - y \).
+	\end{qsolve}
+\end{qsolve}
+\subsection{part 2}
+\textbf{The Hessian Matrix and Its Semi-Definiteness}:
+\subsubsection{part 2.1}
+Compute the Hessian matrix of the loss function \( L(z, y) \) with respect to \( z \) as \( H \in \mathbb{R}^{K \times K} \).
+\begin{qsolve}
+	\begin{qsolve}[]
+		From the previous result, we know that the gradient of \( L \) with respect to \( z \) is:
+		\[
+		\nabla_z L = \hat{y} - y.
+		\]
+		Thus, \( \frac{\partial L}{\partial z_i} = \hat{y}_i - y_i \).
+		To find the Hessian \( H \), we need to compute the second derivative of \( L \) with respect to \( z_i \) and \( z_j \):
+		\[
+		H_{ij} = \frac{\partial^2 L}{\partial z_i \partial z_j}.
+		\]
+		We have:
+		\[
+		\frac{\partial^2 L}{\partial z_i \partial z_j} = \frac{\partial}{\partial z_j} \left( \frac{\partial L}{\partial z_i} \right) = \frac{\partial}{\partial z_j} \left( \hat{y}_i - y_i \right) = \frac{\partial \hat{y}_i}{\partial z_j} = \frac{\partial}{\partial z_j} \left( \frac{e^{z_i}}{\sum_{k=1}^K e^{z_k}} \right).
+		\]
+		so we have:
+		\[
+		\frac{\partial \hat{y}_i}{\partial z_j} = \frac{e^{z_i} \cdot \delta_{ij} \sum_{k=1}^K e^{z_k} - e^{z_i} \cdot e^{z_j}}{\left( \sum_{k=1}^K e^{z_k} \right)^2},
+		\]
+		where \( \delta_{ij} \) is 1 if \( i = j \) and 0 otherwise. so \(H_{ij} = \hat{y}_i (\delta_{ij} - \hat{y}_j)\) . Therefore, the Hessian matrix \( H \) is:
+		\[
+		H = \begin{bmatrix} 
+		\hat{y}_1 (1 - \hat{y}_1) & -\hat{y}_1 \hat{y}_2 & \dots & -\hat{y}_1 \hat{y}_K \\
+		-\hat{y}_2 \hat{y}_1 & \hat{y}_2 (1 - \hat{y}_2) & \dots & -\hat{y}_2 \hat{y}_K \\
+		\vdots & \vdots & \ddots & \vdots \\
+		-\hat{y}_K \hat{y}_1 & -\hat{y}_K \hat{y}_2 & \dots & \hat{y}_K (1 - \hat{y}_K)
+		\end{bmatrix}.
+		\]
+		in another form we can write \( H \) as:
+		\[
+		H = \text{diag}(\hat{y}) - \hat{y} \hat{y}^T.
+		\]
+
+	\end{qsolve}
+\end{qsolve}
+\subsubsection{part 2.2}
+Prove that the Hessian matrix \( H \) is semi-definite.
+\begin{qsolve}
+	\begin{qsolve}[]
+		we calculated the Hessian matrix \( H \) as:
+		\[
+		H = \text{diag}(\hat{y}) - \hat{y} \hat{y}^T
+		\]
+		this matrix is symmetric, so we only need to show that it is positive semi-definite. Let \( x \in \mathbb{R}^K \) be an arbitrary vector. Then:
+		\[
+		x^T H x = x^T \text{diag}(\hat{y}) x - x^T \hat{y} \hat{y}^T x = \sum_{i=1}^K \hat{y}_i x_i^2 - \left( \sum_{i=1}^K \hat{y}_i x_i \right)^2
+		\]
+		we can rewrite the second term as \( (x^T \hat{y})^2 \).
+		the first term is always non-negative, and the second term is the square of a real number, so it is also non-negative. to prove that \( H \) is positive semi-definite, we need to show that this expression is always non-negative. to do so we use the Cauchy-Schwarz inequality:
+		\[
+		(x^T \hat{y})^2 \leq \left(\sum_{i=1}^{K}\hat{y}_i\right) \left(\sum_{i=1}^{K}x_i^2\hat{y}_i\right) = \sum_{i=1}^{K}\hat{y}_i x_i^2
+		\]
+		Therefore, \( x^T H x \geq 0 \) for all \( x \in \mathbb{R}^K \), which implies that \( H \) is positive semi-definite.
+	\end{qsolve}
+\end{qsolve}
+\subsection{part 3}
+Using the result from part (2), determine if the loss function \( L(z, y) \) is a convex function with respect to \( z \) or not.
+\begin{qsolve}
+	\begin{qsolve}[]
+		From part (2), we know that the Hessian matrix \( H \) is positive semi-definite. A function is convex if its Hessian is positive semi-definite. Therefore the loss function \( L(z, y) \) is a convex function with respect to \( z \).
+	\end{qsolve}
+\end{qsolve}

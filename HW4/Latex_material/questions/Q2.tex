@@ -1,0 +1,12 @@
+\section{Question 2}
+
+Mention two issues that exist when using the one-hot vector for word representation.
+\begin{qsolve}
+    \begin{qsolve}[]
+        Firstly, one-hot encoding results in very high-dimensional vectors. The size of the vector depends on the vocabulary size, which can be enormous for natural language datasets. This high dimensionality makes computations inefficient and requires a lot of memory, which is particularly problematic for tasks involving large vocabularies.
+
+        Secondly, one-hot vectors do not capture any semantic or contextual relationships between words. For instance, the words "king" and "queen" are treated as entirely independent and unrelated, even though they share a semantic connection. This lack of meaning in the representation severely limits the model's ability to generalize and understand linguistic patterns.
+        
+        These limitations highlight the need for more efficient and meaningful word representations, such as dense embeddings learned through methods like Word2Vec or GloVe.
+    \end{qsolve}
+\end{qsolve}

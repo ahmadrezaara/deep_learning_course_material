@@ -1,0 +1,33 @@
+\section{Question 4 }
+
+In this question, we want to familiarize ourselves with concepts in sequence-to-sequence (Seq2Seq) models, their advantages, and their disadvantages. In this question, we will study the concept of \textbf{teacher forcing}. To generate a sequence, we can consider a raw strategy where we generate token $t+1$ at time $t+1$ by encoding time $t$ output as the input at time $t+1$. However, this has some problems.
+
+\subsection{part A}
+First, explain what these problems are, and then explain the \textbf{teacher forcing} method and how it resolves these issues.
+
+\begin{qsolve}
+  \begin{qsolve}[]
+    In sequence-to-sequence models, a common strategy is to use the output from time \( t \) as input for time \( t+1 \). This has problems because if the model makes a mistake, the error propagates to later steps, making the entire sequence worse. This issue, called error accumulation, is especially bad for long sequences. Also, during training, the model does not see its own outputs, which creates a mismatch between training and inference. This is known as exposure bias.
+
+    The \textbf{teacher forcing} method fixes these issues by feeding the true outputs (ground truth) from the training data as inputs at each step instead of the model's own outputs. This helps the model learn better because it always gets correct inputs during training. It also reduces exposure bias and speeds up learning.
+
+    However, teacher forcing has a limitation. During inference, the model still uses its own outputs as inputs, which it was not trained for. To handle this, techniques like scheduled sampling are used to mix ground truth and self-generated inputs during training.
+
+  \end{qsolve}
+\end{qsolve}
+\subsection{part B}
+The main problem of \textbf{teacher forcing} is \textbf{exposure bias}. Explain this issue.
+\begin{qsolve}
+  \begin{qsolve}[]
+    The main problem of \textbf{teacher forcing} is exposure bias. During training, the model always uses the correct output (ground truth) as input, but during inference, it uses its own predictions. This mismatch makes the model unprepared for inference conditions, and errors in predictions can accumulate over time, especially in long sequences.
+  \end{qsolve}
+\end{qsolve}
+\subsection{part C}
+One of the solutions to the \textbf{exposure bias} issue is a technique called \textbf{scheduled sampling}. Explain this technique and describe how it reduces the effect of exposure bias.
+\begin{qsolve}
+  \begin{qsolve}[]
+    \textbf{Scheduled sampling} is a technique used to reduce exposure bias in sequence-to-sequence models. Instead of always using the ground truth as input during training, scheduled sampling gradually introduces the model's own predictions as inputs. At the start of training, the model mostly uses the ground truth, but as training progresses, it increasingly uses its own predictions.
+
+    This helps the model adapt to inference conditions, where it relies entirely on its predictions. By exposing the model to its own outputs during training, scheduled sampling reduces the mismatch between training and inference, making the model more robust and less prone to error accumulation.
+  \end{qsolve}
+\end{qsolve}
