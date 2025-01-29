@@ -1,0 +1,31 @@
+\section{Question 4}
+
+Read the paper on \(\beta\)-VAE and answer the following questions.
+\subsection{part a}
+Summarize the idea of \(\beta\)-VAE and explain how it differs from a standard VAE.
+
+\begin{qsolve}
+    \begin{qsolve}[]
+      The \(\beta\)-VAE is an improved version of the standard Variational Autoencoder (VAE) that focuses on learning disentangled representations of data. It adds a hyperparameter \(\beta > 1\) to the loss function, which changes how much the model balances reconstruction accuracy and the independence of the latent variables. The loss function becomes:
+      \[
+      \mathcal{L} = \mathbb{E}_{q_{\phi}(z|x)}[\log p_{\theta}(x|z)] - \beta \, D_{\mathrm{KL}}(q_{\phi}(z|x) \| p(z)).
+      \]
+
+      Unlike a standard VAE (where \(\beta = 1\)), \(\beta\)-VAE puts more weight on the KL divergence term. This forces the model to use the latent space more efficiently and encourages the discovery of independent factors in the data, making the learned representations easier to understand.
+
+      The main difference is that \(\beta\)-VAE can learn disentangled representations better than a standard VAE, but this comes with a trade-off. A higher \(\beta\) reduces the reconstruction quality because the model has to compress the data more in the latent space. This means that the choice of \(\beta\) is crucial for balancing the trade-off between disentanglement and reconstruction quality.      
+    \end{qsolve}
+\end{qsolve}
+
+\subsection{part b}
+Based on the information given in Section 2 of that paper, describe the importance and function of the \emph{disentanglement metric}.
+
+\begin{qsolve}
+    \begin{qsolve}[]
+      The disentanglement metric in \(\beta\)-VAE measures how well the model separates different generative factors of the data into individual latent dimensions. This is important because disentangled representations are easier to interpret and can be used for tasks like classification or generation.
+
+      The metric works by checking if a simple linear classifier can predict a specific generative factor (like size or position) based on differences in the latent space. A high score means the model has successfully learned independent and interpretable latent representations. This metric is useful for comparing \(\beta\)-VAE to other models, like InfoGAN or standard VAEs, in a more objective way than just looking at outputs.
+    \end{qsolve}
+\end{qsolve}
+
+

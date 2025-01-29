@@ -1,0 +1,13 @@
+\section{Question 3}
+
+Why, in a VAE, do we assume that the latent space distribution is Gaussian? 
+(Apart from the fact that it is simpler to compute, please note other reasons as well.)
+Investigate whether, in practice, they also use other distributions besides Gaussian.
+
+\begin{qsolve}
+    \begin{qsolve}[]
+      In a VAE, the latent space is often assumed to follow a Gaussian distribution because it ensures a smooth and continuous latent space, allowing for meaningful interpolation and gradual changes in the generated outputs. The Gaussian distribution also has useful mathematical properties, such as closed-form computation of the KL divergence, making training simpler and more efficient. Additionally, the Gaussian prior is flexible and aligns with the Central Limit Theorem, which suggests that many complex data distributions can be approximated by a Gaussian.
+
+      In practice, other distributions are also used depending on the data or task. For example, multimodal distributions like Gaussian Mixtures can better model datasets with distinct clusters, and constrained distributions like Beta or von Mises are used when the latent space has specific constraints. Implicit distributions are also explored for complex data where explicit parametric forms may not be ideal. Despite this, Gaussian priors remain popular due to their simplicity and effectiveness.
+    \end{qsolve}
+\end{qsolve}

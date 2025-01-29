@@ -1,0 +1,51 @@
+\section{Question 1}
+\subsection{Part a}
+Suppose we want to generate data similar to our dataset using a \textit{standard autoencoder (AE)}. We have trained an AE, then we pick a random point (using a uniform distribution) in the latent space and feed it into the trained decoder. In your opinion, is it more likely that the output will look strange/abnormal, or is it more likely to resemble the dataset? \textit{Why?} 
+\begin{qsolve}
+    \begin{qsolve}[]
+
+        It is more likely that the output will look strange or abnormal. 
+
+        A standard autoencoder (AE) focuses on learning to reconstruct data points from the training set but does not ensure that random points in the latent space will produce valid data. The latent space is not regularized, so points chosen randomly may not represent meaningful data. 
+
+        As a result, when we pick a random point and feed it to the decoder, the output is unlikely to resemble the dataset. Models like Variational Autoencoders (VAEs) handle this better because they organize the latent space in a way that supports sampling valid outputs.
+
+    \end{qsolve}
+\end{qsolve}
+\subsection{Part b}
+List at least three problems with the method in part (a) for generating data similar to
+the dataset. Then, describe how a \textbf{VAE} solves these issues.
+\begin{qsolve}
+    \begin{qsolve}[]
+    1. The latent space in a standard autoencoder (AE) is unstructured, so random points sampled from it are unlikely to represent meaningful data.
+
+    2. AEs do not generalize well to unseen latent points because the decoder is only trained to reconstruct data from the training set.
+
+    3. The method lacks a probabilistic framework, meaning the outputs are not guaranteed to resemble the dataset's distribution.
+    \splitqsolve[\splitqsolve]
+    A Variational Autoencoder (VAE) solves these issues by regularizing the latent space with a probabilistic prior (usually a Gaussian), ensuring random points correspond to meaningful data. VAEs also encourage smooth latent space coverage with KL divergence, improving generalization, and align the output distribution with the dataset for more realistic samples.
+    \end{qsolve}
+\end{qsolve}
+\subsection{Part c}
+Suppose that, during the training of the AE, we add Gaussian noise with mean zero and variance ($0.05 \times R$) to the encoder's output. Here, \(R\) is defined as the mean of the squared distances of the latent points from their center and is updated at each training step. Does the decoder trained via this approach perform \emph{better} than a typical AE decoder? What we mean by ``better'' is: if a random point in the latent space is chosen by chance, is its output more likely to resemble a sample from the dataset? Which of the two approaches is more likely to yield an output that looks like actual data?
+\begin{qsolve}
+    \begin{qsolve}[]
+        Adding Gaussian noise to the encoder's output during training makes the decoder perform better than a typical AE decoder. 
+
+        The noise helps the autoencoder learn a smoother and more robust latent space, making the model better at generalizing and reconstructing data even when latent points are slightly disturbed. This increases the chance that random points in the latent space will produce outputs similar to the dataset.
+
+        Overall, this approach is more likely to create realistic outputs and avoids overfitting compared to a standard AE.
+    \end{qsolve}
+\end{qsolve}
+\subsection{Part d}
+Does VAE have any advantage over the method presented in part (c)? 
+What is the key difference between these two methods?
+\begin{qsolve}
+    \begin{qsolve}[]
+        Yes, a VAE has an advantage over the method in part (c). 
+
+        The key difference is that a VAE imposes a clear probabilistic structure on the latent space using a prior distribution, ensuring better organization and alignment for sampling. The method in part (c) uses Gaussian noise for regularization, which improves robustness but does not provide this structured framework.
+        
+        A VAE's advantage lies in its smoother latent space and more reliable generation of realistic outputs.
+    \end{qsolve}
+\end{qsolve}
