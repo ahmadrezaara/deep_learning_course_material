@@ -1,0 +1,158 @@
+\section{Question 3 (50 points)}
+Consider a two-layer neural network for \( K \)-class classification with the following relationships. The input \( x \) has a dimension of \( d_x \), and the output \( y \in \{0,1\}^K \) is in one-hot encoded format. The hidden layer has \( d_a \) neurons.
+
+\[
+z^{(1)} = W^{(1)} x + b^{(1)}
+\]
+\[
+\hat{a}^{(1)} = \text{LeakyReLU}(z^{(1)}, \alpha = 0.1)
+\]
+\[
+a^{(1)} = \text{Dropout}(\hat{a}^{(1)}, p = 0.2)
+\]
+\[
+z^{(2)} = W^{(2)} a^{(1)} + b^{(2)}
+\]
+\[
+\hat{y} = \text{softmax}(z^{(2)})
+\]
+\[
+L = \sum_{i=1}^{K} -y_i \log(\hat{y}_i)
+\]
+\begin{subsection}{part 1}
+Compute  $\frac{\partial \hat{y}_k }{\partial z_i^{(2)}}$and simplify your answer in term of $\hat{y}$.
+\begin{qsolve}
+	\begin{qsolve}[]
+		we know that the softmax function is defined as:
+		\[
+		\hat{y}_k = \frac{e^{z_k^{(2)}}}{\sum_{j=1}^K e^{z_j^{(2)}}}
+		\]
+		we want to compute the derivative of \( \hat{y}_k \) with respect to \( z_i^{(2)} \). we have to find derivative in two cases:
+		in case \( i = k \), we have:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_k^{(2)}} = \frac{\partial}{\partial z_k^{(2)}} \left( \frac{e^{z_k^{(2)}}}{\sum_{j=1}^K e^{z_j^{(2)}}} \right)
+		\]
+		so we can write:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_k^{(2)}} = \frac{e^{z_k^{(2)}} \sum_{j=1}^K e^{z_j^{(2)}} - e^{z_k^{(2)}2}}{\left( \sum_{j=1}^K e^{z_j^{(2)}} \right)^2}
+		\]
+		we can simplify the above equation as:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_k^{(2)}} = \hat{y}_k \left( 1 - \hat{y}_k \right)
+		\]
+		in case \( i \neq k \), we have:
+		\splitqsolve[\splitqsolve]
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_i^{(2)}} = \frac{\partial}{\partial z_i^{(2)}} \left( \frac{e^{z_k^{(2)}}}{\sum_{j=1}^K e^{z_j^{(2)}}} \right)
+		\]
+		we can write:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_i^{(2)}} = \frac{-e^{z_k^{(2)}} e^{z_i^{(2)}}}{\left( \sum_{j=1}^K e^{z_j^{(2)}} \right)^2}
+		\]
+		we can simplify the above equation as:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_i^{(2)}} = -\hat{y}_k \hat{y}_i
+		\]
+		so the final answer is:
+		\[
+		\frac{\partial \hat{y}_k}{\partial z_i^{(2)}} = \begin{cases}
+			\hat{y}_k \left( 1 - \hat{y}_k \right) & \text{if } i = k\\
+			-\hat{y}_k \hat{y}_i & \text{if } i \neq k
+		\end{cases}
+		\]
+	\end{qsolve}
+\end{qsolve}
+\subsection{part 2}
+Assume that the vector \( y \) consists of all zeros except one component at k, which is equal to 1,(i.e., $y_k = 1$ and $y_i = 0$ for $i \neq k$). Compute $\frac{\partial L}{\partial z^{(2)}}$ and simplify your answer in terms of $\hat{y}$.
+\begin{qsolve}
+	\begin{qsolve}[]
+		Given that \( y \) is a one-hot encoded vector, we have \( y_k = 1 \) for a specific class \( k \) and \( y_i = 0 \) for all \( i \neq k \). The loss function \( L \) for this classification problem, using cross-entropy, is:
+
+		\[
+		L = -\sum_{i=1}^K y_i \log(\hat{y}_i).
+		\]
+		
+		so we can write:
+		\[
+		L = -\log(\hat{y}_k)
+		\]
+		we want to compute the derivative of \( L \) with respect to \( z^{(2)} \). we have:
+		\[
+		\frac{\partial L}{\partial z^{(2)}} = \frac{\partial}{\partial z^{(2)}} \left( -\log(\hat{y}_k) \right) = -\frac{1}{\hat{y}_k} \frac{\partial \hat{y}_k}{\partial z^{(2)}}
+		\]
+		we computed \( \frac{\partial \hat{y}_k}{\partial z^{(2)}} \) in the previous part, so for the case \( i = k \), we have:
+		\[
+		\frac{\partial L}{\partial z^{(2)}} = -\frac{1}{\hat{y}_k} \hat{y}_k \left( 1 - \hat{y}_k \right) = \hat{y}_k - 1
+		\]
+		and for the case \( i \neq k \), we have:
+		\splitqsolve[\splitqsolve]
+		\[
+		\frac{\partial L}{\partial z^{(2)}} = -\frac{1}{\hat{y}_k} \left( -\hat{y}_k \hat{y}_i \right) = \hat{y}_i
+		\]
+		so we can write the final answer as:
+		\[
+		\frac{\partial L}{\partial z^{(2)}} = \begin{cases}
+			\hat{y}_k - 1 & \text{if } i = k\\
+			\hat{y}_i & \text{if } i \neq k
+		\end{cases}
+		\]
+
+
+	\end{qsolve}
+\end{qsolve}
+\subsection{part 3}
+Compute \( \frac{\partial L}{\partial W^{(1)}} \).
+\begin{qsolve}
+	\begin{qsolve}[]
+		To compute \( \frac{\partial L}{\partial W^{(1)}} \), we need to expand each part of the gradient step by step.
+
+		first we compute the gradient with respect to \( z^{(2)} \):
+		\[
+		\frac{\partial L}{\partial z^{(2)}} = \hat{y} - y
+		\]
+		second we compute the gradient with respect to \( a^{(1)} \):
+		\[
+		\frac{\partial L}{\partial a^{(1)}} = \frac{\partial L}{\partial z^{(2)}} \cdot \left( W^{(2)} \right)^T = (\hat{y} - y) \cdot \left( W^{(2)} \right)^T
+		\]
+		as we know the Dropout layer is a binary mask, we can write:
+		\[
+		M = \begin{cases}
+			1, & \text{with probability } 1 - p,\\
+			0, & \text{with probability } p.
+		\end{cases}
+		\]
+		so we can write:
+		\[
+		\frac{\partial L}{\partial \hat{a}^{(1)}} = (\hat{y} - y) \cdot \left( W^{(2)} \right)^T \circ M
+		\]
+		where \( \circ \) is the element-wise product.
+		now we compute the gradient with respect to \( z^{(1)} \):
+		\[
+		\frac{\partial \hat{a}^{(1)}_i}{\partial z^{(1)}_i} = \begin{cases}
+			1, & \text{if } z^{(1)}_i > 0,\\
+			0.1, & \text{if } z^{(1)}_i \leq 0.
+		\end{cases}
+		\]
+		if we use the definition of $\mathbb{I}$ we can write LeakyReLU as $$\mathbb{I}(z^{(1)} > 0)z^{(1)} + 0.1\mathbb{I}(z^{(1)} \leq 0)z^{(1)}$$ 
+		so we can write:
+		\[
+		\frac{\partial L}{\partial z^{(1)}} = \frac{\partial L}{\partial \hat{a}^{(1)}} \circ \text{LeakyReLU}'(z^{(1)})
+		\]
+		\splitqsolve[\splitqsolve]		
+		Therefore:
+		\[
+		\frac{\partial L}{\partial z^{(1)}} = \left( \left((\hat{y} - y) \cdot \left( W^{(2)} \right)^T \right) \circ M \right) \circ \text{LeakyReLU}'(z^{(1)})
+		\]
+   		where \( \text{LeakyReLU}'(z^{(1)}) \) is a vector with elements \( 1 \) for positive \( z^{(1)}_i \) and \( 0.1 \) for non-positive \( z^{(1)}_i \).
+		Finally, we compute the gradient with respect to \( W^{(1)} \):
+		\[
+		\frac{\partial L}{\partial W^{(1)}} = \frac{\partial L}{\partial z^{(1)}} \cdot x^T
+		\]
+		Therefore:
+		\[
+		\frac{\partial L}{\partial W^{(1)}} = \left( \left((\hat{y} - y) \cdot \left( W^{(2)} \right)^T \right) \circ M \circ \text{LeakyReLU}'(z^{(1)}) \right) x^T
+		\]
+
+
+	\end{qsolve}
+\end{qsolve}

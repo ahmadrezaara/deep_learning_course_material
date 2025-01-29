@@ -1,0 +1,41 @@
+\section{Question 6 (40 points)}
+Prove the convergence of Newton's method for the function \( f(x) = g'(x) \). Assume \( f \) is twice differentiable and has an optimal point \( x^* \) with \( f(x^*) = 0 \) and \( f'(x^*) \neq 0 \). Then show that Newton's method can find \( x^* \), which is also the optimal point of the function \( g \), proving the convergence.
+\begin{qsolve}
+	\begin{qsolve}[]
+		For a function \( f(x) \), Newton's update rule is given by:
+		\[
+		x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}.
+		\]
+
+		we write taylor expansion of \( f(x) \) around \( x^* \) up to the second order:
+		\[
+		f(x) \approx f(x^*) + f'(x^*)(x - x^*) + \frac{f''(x^*)}{2}(x - x^*)^2
+		\]
+		Since \( f(x^*) = 0 \), this simplifies to:
+		\[
+		f(x) \approx f'(x^*)(x - x^*) + \frac{f''(x^*)}{2}(x - x^*)^2.
+		\]
+		now we define \( e_k = x_k - x^* \) as the error at iteration \( k \). Substituting \( x_k = x^* + e_k \) into the taylor expansion of \( f(x) \) gives:
+		\[
+		f(x_k) \approx f'(x^*) e_k + \frac{f''(x^*)}{2} e_k^2.
+		\]
+		using this in the Newton's update rule gives:
+		\[
+		x_{k+1} = x_k - \frac{f'(x^*) e_k + \frac{f''(x^*)}{2} e_k^2}{f'(x^*)}.
+		\]
+		Expanding this gives:
+		\[
+		x_{k+1} = x_k - e_k - \frac{f''(x^*)}{2 f'(x^*)} e_k^2.
+		\]
+		Simplifying, we obtain:
+		\[
+		e_{k+1} = x_{k+1} - x^* = x_k - x^* - e_k - \frac{f''(x^*)}{2 f'(x^*)} e_k^2= -\frac{f''(x^*)}{2 f'(x^*)} e_k^2.
+		\]
+
+		The above equation shows that:
+		\[
+		|e_{k+1}| \approx C |e_k|^2,
+		\]
+		where \( C = \left| \frac{f''(x^*)}{2 f'(x^*)} \right| \) is a constant. This shows that the error \(e_k \) decreases quadratically. Therefore, Newton's method converges to \( x^* \).
+	\end{qsolve}
+\end{qsolve}

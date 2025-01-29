@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage{blindtext}
+\usepackage[bordered]{uni-style}
+\usepackage{uni-math}
+\usepackage{pgfplots}
+\usepackage{color,soul}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{mathptmx}
+
+\newlist{mylist}{enumerate}{1}
+\setlist[mylist]{label=\textbullet}
+\captionsetup[figure]{font = footnotesize, labelfont = bf, labelsep = period, skip = 3pt}
+
+\title{Deep learning}
+\prof{DR.Fatemi Zadeh}
+% \subtitle{latex and documents}
+\subject{assignment 2}
+\info{
+    \begin{tabular}{lr}
+        Ahmadreza Majlesara & 400101861\\
+        computer assignment & \href{https://github.com/ahmadrezaara/deep_learning_course_material/tree/main/CHW2}{repository}\\
+    \end{tabular}
+}
+\date{\today}
+\department{electrical engineering department}
+
+\usepackage[final]{pdfpages}
+
+\usepackage{fontspec}
+
+
+\begin{document}
+\maketitlepage
+\maketitlestart
+\foreach \x in {1,2,3,4,5,6,7}{
+    \input{questions/Q\x.tex}
+    \clearpage
+}
+\end{document}

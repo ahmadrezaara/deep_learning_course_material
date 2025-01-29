@@ -1,0 +1,47 @@
+\section{Question 4 (40 points)}
+Show that the Hessian matrix of the transformation \( y(u, v, z) = \psi(u, v, z) \) can be expressed as the Jacobian matrix of the gradient of this transformation. Note that the variables \( z \), \( v \), and \( u \) are 1-dimensional, and \( y \) is also a function in terms of them.
+\begin{qsolve}
+	\begin{qsolve}[]		
+      The gradient of \( y(u, v, z) \) with respect to \( (u, v, z) \) is given by:
+      \[
+      \nabla y = \begin{bmatrix} \frac{\partial y}{\partial u} \\ \frac{\partial y}{\partial v} \\ \frac{\partial y}{\partial z} \end{bmatrix}.
+      \]
+      
+      The Hessian matrix \( H(y) \) is defined as:
+      \[
+      H(y) = \begin{bmatrix}
+      \frac{\partial^2 y}{\partial u^2} & \frac{\partial^2 y}{\partial u \partial v} & \frac{\partial^2 y}{\partial u \partial z} \\
+      \frac{\partial^2 y}{\partial v \partial u} & \frac{\partial^2 y}{\partial v^2} & \frac{\partial^2 y}{\partial v \partial z} \\
+      \frac{\partial^2 y}{\partial z \partial u} & \frac{\partial^2 y}{\partial z \partial v} & \frac{\partial^2 y}{\partial z^2}
+      \end{bmatrix}.
+      \]
+      
+      The Jacobian matrix of the gradient \( \nabla y \) with respect to \( (u, v, z) \) is obtained by differentiating each component of the gradient vector with respect to \( u \), \( v \), and \( z \).
+      
+      Differentiating \( \frac{\partial y}{\partial u} \) with respect to \( u \), \( v \), and \( z \) gives the first row of the Hessian:
+      \[
+      \begin{bmatrix} \frac{\partial^2 y}{\partial u^2} & \frac{\partial^2 y}{\partial u \partial v} & \frac{\partial^2 y}{\partial u \partial z} \end{bmatrix}.
+      \]
+      
+      Differentiating \( \frac{\partial y}{\partial v} \) with respect to \( u \), \( v \), and \( z \) gives the second row of the Hessian:
+      \[
+      \begin{bmatrix} \frac{\partial^2 y}{\partial v \partial u} & \frac{\partial^2 y}{\partial v^2} & \frac{\partial^2 y}{\partial v \partial z} \end{bmatrix}.
+      \]
+      
+      Differentiating \( \frac{\partial y}{\partial z} \) with respect to \( u \), \( v \), and \( z \) gives the third row of the Hessian:
+      \[
+      \begin{bmatrix} \frac{\partial^2 y}{\partial z \partial u} & \frac{\partial^2 y}{\partial z \partial v} & \frac{\partial^2 y}{\partial z^2} \end{bmatrix}.
+      \]
+      
+      Thus, we can clearly see that:
+      \[
+      J(\nabla y) = \begin{bmatrix}
+      \frac{\partial^2 y}{\partial u^2} & \frac{\partial^2 y}{\partial u \partial v} & \frac{\partial^2 y}{\partial u \partial z} \\
+      \frac{\partial^2 y}{\partial v \partial u} & \frac{\partial^2 y}{\partial v^2} & \frac{\partial^2 y}{\partial v \partial z} \\
+      \frac{\partial^2 y}{\partial z \partial u} & \frac{\partial^2 y}{\partial z \partial v} & \frac{\partial^2 y}{\partial z^2}
+      \end{bmatrix}.
+      \]
+      
+      By comparing the two matrices, we see that the Hessian matrix of the transformation \( y(u, v, z) = \psi(u, v, z) \) can be expressed as the Jacobian matrix of the gradient of this transformation.
+      \end{qsolve}
+\end{qsolve}

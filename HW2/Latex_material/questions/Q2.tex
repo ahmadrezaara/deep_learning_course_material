@@ -1,0 +1,93 @@
+\section{Question 2 (50 points)} 
+Answer the following questions regarding Batch Normalization (BN).
+\subsection{part 1}
+Describe the problem of covariate shift in neural networks and explain how BN addresses it.
+\begin{qsolve}
+    \begin{qsolve}[]
+        In neural networks, covariate shift happens when the parameters of previous layers are changed during training, causing a change in the distribution of inputs to a layer. Each layer must constantly adjust as a result of this change, which slows training and may cause instability.
+
+        By normalizing each layer's input to have a constant mean and variance across mini-batches, Batch Normalization (BN) addresses covariate shift. Training becomes quicker and more stable as BN lessens the effect of covariate change by standardizing these inputs.
+    \end{qsolve}
+\end{qsolve}
+\subsection{part 2}
+Explain how BN helps in the generalization of the network.
+\begin{qsolve}
+    \begin{qsolve}[]
+        Batch Normalization (BN) acts as a regularizer, improving neural network generalization. BN normalizes the inputs within each mini-batch during training, which introduces minor noise as a result of batch statistics variation. This noise works similarly to dropout, adding unpredictability to keep the network from overfitting to the training data. As a result, the network learns more robust characteristics that can generalize to previously unseen data. Furthermore, BN enables the network to use greater learning rates, which might result in faster convergence and better exploration of the solution space, hence promoting generalization.
+
+    \end{qsolve}
+\end{qsolve}
+\subsection{part 3}
+Consider a simple BN where we normalize the data without dividing by the standard deviation, meaning we only center the inputs \( x_i \) as follows:
+\[
+\mu = \frac{1}{n} \sum_{j=1}^{n} x_j \quad \text{so that} \quad \tilde{x}_i = x_i - \mu
+\]
+where \( [x, x_1, \ldots, x_n] \) are the inputs in a mini-batch of size \( n \), and the outputs \( [y, y_1, \ldots, y_n] \) are the outputs which $y_i = \gamma \hat{x}_i + \beta $. Assume at the end of a deep network, a cost function \( L \) is defined. Compute\( \frac{\partial L}{\partial x_i} \) in term of \( \frac{\partial L}{\partial y_j} \) for \( j = 1, \ldots, n \).
+\begin{qsolve}
+    \begin{qsolve}[]
+        Since \( y_j = \gamma \tilde{x}_j + \beta \), we have:
+        \[
+        \frac{\partial L}{\partial \tilde{x}_i} = \sum_{j=1}^n \frac{\partial L}{\partial y_j} \frac{\partial y_j}{\partial \tilde{x}_i}.
+        \]
+
+        Now, calculate \( \frac{\partial y_j}{\partial \tilde{x}_i} \):
+        \[
+        \frac{\partial y_j}{\partial \tilde{x}_i} = 
+        \begin{cases}
+        \gamma, & \text{if } i = j, \\
+        0, & \text{if } i \neq j.
+        \end{cases}
+        \]
+        \[
+        \Rightarrow\frac{\partial L}{\partial \tilde{x}_i} = \frac{\partial L}{\partial y_i} \cdot \gamma.
+        \]
+        \[
+        \Rightarrow\frac{\partial L}{\partial x_i} = \frac{\partial L}{\partial \tilde{x}_i} \frac{\partial \tilde{x}_i}{\partial x_i} + \sum_{k=1}^n \frac{\partial L}{\partial \tilde{x}_k} \frac{\partial \tilde{x}_k}{\partial x_i}.
+        \]
+        since \( \tilde{x}_i = x_i - \mu \), we have:
+        \[
+        \frac{\partial \tilde{x}_i}{\partial x_i} = 1 - \frac{1}{n}.
+        \]
+        and for \( k \neq i \):
+        \[
+        \frac{\partial \tilde{x}_k}{\partial x_i} = -\frac{1}{n}.
+        \]
+        so we can rewrite the equation as:
+        \[
+        \frac{\partial L}{\partial x_i} = \frac{\partial L}{\partial \tilde{x}_i} \cdot 1 + \sum_{k=1}^n \frac{\partial L}{\partial \tilde{x}_k} \cdot -\frac{1}{n}.
+        \]
+        Now, substitute \( \frac{\partial L}{\partial \tilde{x}_k} = \frac{\partial L}{\partial y_k} \cdot \gamma \) for each \( k \):
+        \[
+        \frac{\partial L}{\partial x_i} = \frac{\partial L}{\partial y_i} \cdot \gamma \left(1 - \frac{1}{n}\right) - \sum_{k \neq i} \frac{\partial L}{\partial y_k} \cdot \gamma \cdot \frac{1}{n}.
+        \]  
+        so if we factor out \( \gamma \) from the equation, we get:
+        \[
+        \frac{\partial L}{\partial x_i} = \gamma \left(\frac{\partial L}{\partial y_i} - \frac{1}{n} \sum_{k=1}^n \frac{\partial L}{\partial y_k}\right).
+        \]
+    \end{qsolve}
+\end{qsolve}
+\subsection{part 4}
+In part (3), find \( \frac{\partial L}{\partial x_i} \) for the two cases \( n \to \infty \) and \( n = 1 \). What result do you obtain?
+\begin{qsolve}
+    \begin{qsolve}[]
+        From the previous part, we have:
+        \splitqsolve[\splitqsolve]
+        \[
+        \frac{\partial L}{\partial x_i} = \gamma \left(\frac{\partial L}{\partial y_i} - \frac{1}{n} \sum_{j=1}^n \frac{\partial L}{\partial y_j}\right).
+        \]
+        so for \( n \to \infty \):
+        \[
+        \frac{\partial L}{\partial x_i} = \gamma \left(\frac{\partial L}{\partial y_i} - \frac{1}{\infty} \sum_{j=1}^\infty \frac{\partial L}{\partial y_j}\right) = \gamma \left(\frac{\partial L}{\partial y_i} - 0\right) = \gamma \frac{\partial L}{\partial y_i}.
+        \]
+        As \( n \to \infty \), the term \( \frac{1}{n} \sum_{j=1}^n \frac{\partial L}{\partial y_j} \) becomes the average of \( \frac{\partial L}{\partial y_j} \) over all of the data.so the Normalization term is removed, and the gradient is scaled by \( \gamma \).(which is the same as the case without normalization)
+        
+        for \( n = 1 \):
+        \[
+        \frac{\partial L}{\partial x_i} = \gamma \left(\frac{\partial L}{\partial y_i} - \frac{1}{1} \sum_{j=1}^1 \frac{\partial L}{\partial y_j}\right) = \gamma \left(\frac{\partial L}{\partial y_i} - \frac{\partial L}{\partial y_i}\right) = 0.
+        \]
+        When \( n = 1 \), there is only one element in the batch. Thus, we have \( \mu = x_1 \), so \( \tilde{x}_1 = x_1 - \mu = 0 \). In this case, the output \( y_1 = \gamma \cdot 0 + \beta = \beta \), which is constant and does not depend on \( x_1 \).
+
+        Since \( y_1 \) does not depend on \( x_1 \), \( \frac{\partial L}{\partial x_1} = 0 \). This means that the gradient is zero, and the network does not learn anything from the data. 
+
+    \end{qsolve}
+\end{qsolve}
